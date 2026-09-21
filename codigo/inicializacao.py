@@ -6,15 +6,14 @@ from constantes import *  # Você pode usar as constantes definidas em constante
 
 
 def gera_posicao_desocupada(posicoes_ocupadas, largura_mapa, altura_mapa):
-    # Implemente esta função para o nível básico
-    # A função deve retornar uma posição aleatória dentro da janela que não esteja na lista de posições ocupadas.
-    # Uma posição é uma lista com exatas dois elementos: a posição x e a posição y.
-    # Além disso, a posição gerada deve ser adicionada à lista de posições ocupadas.
-    
-    # O código abaixo é apenas um exemplo. Você deve apagar este código e escrever o seu, fazendo o que foi pedido acima.
     x = randint(1, largura_mapa-2)
     y = randint(1, altura_mapa-2)
-    posicao = [x, y]
+    posicao = [x,y]
+    while [x,y] in posicoes_ocupadas:
+       x = randint(1, largura_mapa-2)
+       y = randint(1, altura_mapa-2)
+       posicao = [x, y]
+    posicoes_ocupadas.append(posicao)
     return posicao
 
 
