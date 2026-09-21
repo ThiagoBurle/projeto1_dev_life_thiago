@@ -68,6 +68,7 @@ def inicializa_estado():
     
     largura_mapa = len(mapa[0])
     altura_mapa = len(mapa)
+
     
     # Você pode colocar o jogador em outro lugar, se preferir
     pos_jogador = [largura_mapa//2, altura_mapa//2]  # Meio do mapa
