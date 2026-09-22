@@ -12,6 +12,7 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
     motor.preenche_fundo(janela, PRETO)
     obejetos = estado['objetos']
     mapa = estado['mapa']
+    pos_jogador = estado['pos_jogador']
     largura_mapa = len(mapa[0])
     altura_mapa = len(mapa)
     coracoes_vazios = estado['max_vidas'] - estado['vidas']
@@ -31,6 +32,7 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
             if estado['vidas'] < estado['max_vidas']:
                 motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
             motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
+            motor.desenha_string(janela, pos_jogador[0] + dx,pos_jogador[1] + dy, JOGADOR , VERDE_CLARO, BRANCO)
             
     for objeto in obejetos:
         posicao = gera_posicao_desocupada(posiçoes,largura_mapa, altura_mapa)
@@ -44,6 +46,7 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
                 motor.desenha_string(janela, posicao[0]+dx,posicao[1]+dy,objeto['tipo'], frente, VERDE_ESCURO )
             else:
                 pass
+    
 
     
 
