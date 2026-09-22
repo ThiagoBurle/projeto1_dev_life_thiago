@@ -26,6 +26,7 @@ TELA_INVENTARIO = 2
 # Você pode mudar os caracteres para o que preferir.
 JOGADOR = '@'
 CORACAO = '❤'
+CORACAO_BRANCO = '🤍'
 ESPINHO = '#'
 MONSTRO = '☠'
 PAREDE = '▣'

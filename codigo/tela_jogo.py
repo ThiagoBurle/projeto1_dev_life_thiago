@@ -14,6 +14,7 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
     mapa = estado['mapa']
     largura_mapa = len(mapa[0])
     altura_mapa = len(mapa)
+    coracoes_vazios = estado['max_vidas'] - estado['vidas']
     posiçoes = estado['posicoes_ocupadas']
     dx = (largura_tela - largura_mapa)// 2
     dy = (altura_tela - altura_mapa) // 2
@@ -27,6 +28,8 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
             #     frente = VERDE_CLARO
             motor.desenha_string(janela, j + dx,i + dy, mapa[i][j], frente, fundo)
             motor.desenha_string(janela, 0 ,0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO )
+            if estado['vidas'] < estado['max_vidas']:
+                motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
             motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
             
     for objeto in obejetos:

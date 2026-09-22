@@ -16,7 +16,7 @@ No nível básico você deve entender o código fornecido e implementar as segui
     - [x] Mostrar mapa;
     - [x] Mostrar jogador;
     - [x] Mostrar objetos;
-    - [ ] Mostrar quantidade de vidas (se o jogador tiver menos vidas do que o máximo, o restante deve ser mostrado como corações brancos - exemplo: 🧡🧡🧡🤍🤍);
+    - [x] Mostrar quantidade de vidas (se o jogador tiver menos vidas do que o máximo, o restante deve ser mostrado como corações brancos - exemplo: 🧡🧡🧡🤍🤍);
     - [ ] Mostrar mensagem.
 - [ ] Implementar a função `atualiza_estado`:
     - [ ] Mover o jogador;
