@@ -4,6 +4,8 @@ from constantes import *  # Você pode usar as constantes definidas em constante
 import motor_grafico as motor  # Utilize as funções do arquivo motor_grafico.py para desenhar na tela
                                # Por exemplo: motor.preenche_fundo(janela, [0, 0, 0]) preenche o fundo de preto
 from inicializacao import gera_posicao_desocupada
+ # O seu código deve desenhar a tela do jogo aqui a partir dos valores no dicionário "estado"
+    # APAGUE ESTA LINHA E A LINHA ABAIXO E ESCREVA SEU CÓDIGO AQUI
 
 def desenha_tela(janela, estado, altura_tela, largura_tela):
     # Utilize o dicionário estado para saber onde o jogador e os outros objetos estão.
@@ -35,36 +37,45 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
             motor.desenha_string(janela, pos_jogador[0] + dx,pos_jogador[1] + dy, JOGADOR , VERDE_CLARO, BRANCO)
             
     for objeto in obejetos:
-        posicao = gera_posicao_desocupada(posiçoes,largura_mapa, altura_mapa)
         if objeto['tipo'] == CORACAO:
-            motor.desenha_string(janela, posicao[0]+dx,posicao[1]+dy,objeto['tipo'], frente, VERMELHO )
+            motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERMELHO )
         else:
             pass
     for objeto in obejetos:
-            posicao = gera_posicao_desocupada(posiçoes,largura_mapa, altura_mapa)
             if objeto['tipo'] == ESPINHO:
-                motor.desenha_string(janela, posicao[0]+dx,posicao[1]+dy,objeto['tipo'], frente, VERDE_ESCURO )
+                motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERDE_ESCURO )
             else:
                 pass
     
 
     
 
+
+
     
-    # O seu código deve desenhar a tela do jogo aqui a partir dos valores no dicionário "estado"
-    # APAGUE ESTA LINHA E A LINHA ABAIXO E ESCREVA SEU CÓDIGO AQUI
-
-
-    motor.mostra_janela(janela)
 
 
 def atualiza_estado(estado, tecla):
     # O seu código deve atualizar o dicionário "estado" com base na tecla apertada pelo jogador
     # Por exemplo, se o jogador apertar a seta para a esquerda (o valor da variável será "ESQUERDA"), 
     # o seu código deve atualizar o dicionário estado['pos_jogador'][0] -= 1
-
-    # Mude o valor da chave 'tela_atual' para mudar de tela
+    mapa = estado['mapa']
+    largura_mapa = len(mapa[0])
+    altura_mapa = len(mapa)
     
+    if tecla == motor.SETA_ESQUERDA:
+        if estado['pos_jogador'][0] > 0:
+            estado['pos_jogador'][0] = estado['pos_jogador'][0] - 1
+    if tecla == motor.SETA_DIREITA:
+        if estado['pos_jogador'][0] <49:
+            estado['pos_jogador'][0] = estado['pos_jogador'][0] + 1
+    if tecla == motor.SETA_CIMA:
+        if estado['pos_jogador'][1] > 0:
+            estado['pos_jogador'][1] = estado['pos_jogador'][1] - 1
+    if tecla == motor.SETA_BAIXO:
+        if estado['pos_jogador'][1] < 14:
+            estado['pos_jogador'][1] = estado['pos_jogador'][1] + 1
+    # Mude o valor da chave 'tela_atual' para mudar de tela
     # Começamos apagando a mensagem anterior, pois ela já foi mostrada no frame anterior
     estado['mensagem'] = ''
 
