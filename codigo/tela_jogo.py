@@ -103,10 +103,12 @@ def atualiza_estado(estado, tecla):
     for objeto in objetos:
         if objeto['posicao'] == estado['pos_jogador']:
             if objeto['tipo'] == CORACAO:
+                estado['objetos'].remove(objeto)
+                estado['mensagem'] = 'sua vida ja esta cheia'
                 if estado['vidas'] < estado['max_vidas']:
                     estado['vidas'] = estado['vidas'] + 1
                     estado['mensagem'] = 'voce ganhou uma vida!'
-                    estado['objetos'].remove(objeto)
+                    
         if objeto['posicao'] == estado['pos_jogador']:
                     if objeto['tipo'] == ESPINHO:
                         if estado['vidas'] > 0:
