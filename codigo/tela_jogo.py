@@ -6,7 +6,7 @@ import motor_grafico as motor  # Utilize as funções do arquivo motor_grafico.p
 from inicializacao import gera_posicao_desocupada
  # O seu código deve desenhar a tela do jogo aqui a partir dos valores no dicionário "estado"
     # APAGUE ESTA LINHA E A LINHA ABAIXO E ESCREVA SEU CÓDIGO AQUI
-
+import random
 def desenha_tela(janela, estado, altura_tela, largura_tela):
     # Utilize o dicionário estado para saber onde o jogador e os outros objetos estão.
     # Por exemplo, para saber a posição do jogador, use estado['pos_jogador']
@@ -74,30 +74,68 @@ def atualiza_estado(estado, tecla):
     largura_mapa = len(mapa[0])
     altura_mapa = len(mapa)
     objetos = estado['objetos']
-    if tecla == motor.SETA_ESQUERDA:
-        if estado['pos_jogador'][0] > 1:
-            if not [estado['pos_jogador'][0] - 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
+    achou_monstro = ''
+    for objeto in objetos:
+                if [estado['pos_jogador'][0], estado['pos_jogador'][1] - 1] == objeto['posicao']:
+                     if objeto['tipo'] == MONSTRO:
+                          achou_monstro = 'sim em cima'
+                if [estado['pos_jogador'][0], estado['pos_jogador'][1]+1] == objeto['posicao']:
+                    if objeto['tipo'] == MONSTRO:
+                        achou_monstro = 'sim em baixo'
+                if [estado['pos_jogador'][0] -1, estado['pos_jogador'][1]] == objeto['posicao']:
+                    if objeto['tipo'] == MONSTRO:
+                        achou_monstro = 'sim na esquerda'
+                if [estado['pos_jogador'][0] + 1, estado['pos_jogador'][1]] == objeto['posicao']:
+                                    if objeto['tipo'] == MONSTRO:
+                                        achou_monstro = 'sim na direita'    
+
+
+    if tecla == motor.SETA_ESQUERDA:       
+        if not [estado['pos_jogador'][0] - 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
+            if achou_monstro != 'sim na esquerda':
                 estado['pos_jogador'][0] = estado['pos_jogador'][0] - 1
-            else:
-                estado['mensagem'] = 'parede no caminho'
+        else:
+            estado['mensagem'] = 'parede no caminho'
+
+   
     if tecla == motor.SETA_DIREITA:
-        if estado['pos_jogador'][0] < largura_mapa - 2:
-            if not [estado['pos_jogador'][0] + 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
+    
+        if not [estado['pos_jogador'][0] + 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
+            if achou_monstro != 'sim na direita':
                 estado['pos_jogador'][0] = estado['pos_jogador'][0] + 1
-            else:
-                estado['mensagem'] = 'parede no caminho'
+        else:
+            estado['mensagem'] = 'parede no caminho'
+
+
     if tecla == motor.SETA_CIMA:
-        if estado['pos_jogador'][1] > 1:
-            if not [estado['pos_jogador'][0] ,estado['pos_jogador'][1] -1] in estado['paredes_no_jogo']:
+        if not [estado['pos_jogador'][0] ,estado['pos_jogador'][1] -1] in estado['paredes_no_jogo']:
+            if achou_monstro != 'sim em cima':
                 estado['pos_jogador'][1] = estado['pos_jogador'][1] - 1
-            else:
-                estado['mensagem'] = 'parede no caminho'
+        else:
+            estado['mensagem'] = 'parede no caminho'
+
+
     if tecla == motor.SETA_BAIXO:
-        if estado['pos_jogador'][1] < altura_mapa - 2:
-            if not [estado['pos_jogador'][0],estado['pos_jogador'][1] + 1] in estado['paredes_no_jogo']:
+        
+        
+        if not [estado['pos_jogador'][0],estado['pos_jogador'][1] + 1] in estado['paredes_no_jogo']:
+            if achou_monstro != 'sim em baixo':
                 estado['pos_jogador'][1] = estado['pos_jogador'][1] + 1
             else:
-                estado['mensagem'] = 'parede no caminho'
+                sorteado = random.random()
+                if sorteado < objeto['probabilidade_de_ataque']:
+                    if estado['vidas'] > 0:
+                       estado['vidas'] = estado['vidas'] -1
+                else:
+                    if objeto['vida'] > 0:
+                        objeto['vida'] = objeto['vida'] -1
+                        if objeto['vida'] == 0:
+                            estado['objeto'].remove(objeto)
+                    
+
+
+        else:
+            estado['mensagem'] = 'parede no caminho'
 
     # criando objetos
     for objeto in objetos:
@@ -113,14 +151,11 @@ def atualiza_estado(estado, tecla):
                     if objeto['tipo'] == ESPINHO:
                         if estado['vidas'] > 0:
                             estado['vidas'] = estado['vidas'] -1
-                            estado['objetos'].remove(objeto)
                             estado['mensagem'] = 'voce perdeu uma vida!'
-        if objeto['posicao'] == estado['pos_jogador']:
-                        if objeto['tipo'] == MONSTRO:
-                            if estado['vidas'] > 0:
-                                estado['vidas'] = estado['vidas'] -1
-                                estado['objetos'].remove(objeto)
-                                estado['mensagem'] = 'voce perdeu uma vida!'
+        
+                             
+                            
+
     if estado['vidas'] == 0:
         estado['tela_atual'] = SAIR
 

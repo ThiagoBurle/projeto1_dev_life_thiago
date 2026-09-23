@@ -113,6 +113,11 @@ def inicializa_estado():
                 })
         posicoes_ocupadas.append(posicao)
     
+    for objeto in objetos:
+        if objeto['tipo'] == MONSTRO:
+            objeto = {'vida' : 5}
+            objeto = {'probabilidade_de_ataque' : 0.3}
+        
 
     objetos += gera_objetos(8, CORACAO, VERMELHO, largura_mapa, altura_mapa, posicoes_ocupadas)
     objetos += gera_objetos(6, ESPINHO, VERDE_CLARO, largura_mapa, altura_mapa, posicoes_ocupadas)
@@ -129,5 +134,7 @@ def inicializa_estado():
         'mensagem': '', # Use esta mensagem para mostrar mensagens ao jogador, como "Você perdeu uma vida" ou "Você ganhou uma vida"
         'posicoes_ocupadas': posicoes_ocupadas,
         'paredes_no_jogo' : paredes_no_jogo
+        
+        
 
     }

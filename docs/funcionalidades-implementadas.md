@@ -38,8 +38,8 @@ No nível básico você deve entender o código fornecido e implementar as segui
     - [x] Mostra mensagem na tela.
 - [x] Adiciona monstros:
     - [x] Sorteia posições aleatórias para os monstros;
-    - [ ] Adiciona `'vida'` e `'probabilidade_de_ataque'` aos monstros;
-    - [ ] Mostra monstros na tela.
+    - [x] Adiciona `'vida'` e `'probabilidade_de_ataque'` aos monstros;
+    - [x] Mostra monstros na tela.
 - [ ] Implementa sistema de batalha:
     - [ ] Verifica se a nova posição do jogador está ocupada por um monstro e impede o movimento;
     - [ ] Sorteia um número aleatório;
