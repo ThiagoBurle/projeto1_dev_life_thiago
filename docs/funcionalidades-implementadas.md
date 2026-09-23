@@ -36,8 +36,8 @@ No nível básico você deve entender o código fornecido e implementar as segui
 - [x] Adiciona colisão com as paredes:
     - [x] Impede o movimento do jogador:
     - [x] Mostra mensagem na tela.
-- [ ] Adiciona monstros:
-    - [ ] Sorteia posições aleatórias para os monstros;
+- [x] Adiciona monstros:
+    - [x] Sorteia posições aleatórias para os monstros;
     - [ ] Adiciona `'vida'` e `'probabilidade_de_ataque'` aos monstros;
     - [ ] Mostra monstros na tela.
 - [ ] Implementa sistema de batalha:
