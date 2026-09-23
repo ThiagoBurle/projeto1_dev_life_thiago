@@ -29,24 +29,34 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
             # if v%2 == 0:
             #     fundo = VERDE_ESCURO
             #     frente = VERDE_CLARO
+            
             motor.desenha_string(janela, j + dx,i + dy, mapa[i][j], frente, fundo)
+           
             motor.desenha_string(janela, 0 ,0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO )
             if estado['vidas'] < estado['max_vidas']:
                 motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
             motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
             motor.desenha_string(janela, pos_jogador[0] + dx,pos_jogador[1] + dy, JOGADOR , VERDE_CLARO, BRANCO)
-            
+
+
+    for objeto in obejetos:
+        if objeto['tipo'] == PAREDE:
+            motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], MARROM_ESCURO, MARROM_MAIS_ESCURO)        
+
+
     for objeto in obejetos:
         if objeto['tipo'] == CORACAO:
             motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERMELHO )
-        else:
-            pass
+        
     for objeto in obejetos:
             if objeto['tipo'] == ESPINHO:
-                motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERDE_ESCURO )
-            else:
-                pass
-    
+                motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERDE_ESCURO)
+            
+    for objeto in obejetos:
+         if objeto['tipo'] == MONSTRO:
+                motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], frente , BRANCO)
+        
+                 
 
     
 
@@ -66,16 +76,30 @@ def atualiza_estado(estado, tecla):
     objetos = estado['objetos']
     if tecla == motor.SETA_ESQUERDA:
         if estado['pos_jogador'][0] > 1:
-            estado['pos_jogador'][0] = estado['pos_jogador'][0] - 1
+            if not [estado['pos_jogador'][0] - 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
+                estado['pos_jogador'][0] = estado['pos_jogador'][0] - 1
+            else:
+                estado['mensagem'] = 'parede no caminho'
     if tecla == motor.SETA_DIREITA:
         if estado['pos_jogador'][0] < largura_mapa - 2:
-            estado['pos_jogador'][0] = estado['pos_jogador'][0] + 1
+            if not [estado['pos_jogador'][0] + 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
+                estado['pos_jogador'][0] = estado['pos_jogador'][0] + 1
+            else:
+                estado['mensagem'] = 'parede no caminho'
     if tecla == motor.SETA_CIMA:
         if estado['pos_jogador'][1] > 1:
-            estado['pos_jogador'][1] = estado['pos_jogador'][1] - 1
+            if not [estado['pos_jogador'][0] ,estado['pos_jogador'][1] -1] in estado['paredes_no_jogo']:
+                estado['pos_jogador'][1] = estado['pos_jogador'][1] - 1
+            else:
+                estado['mensagem'] = 'parede no caminho'
     if tecla == motor.SETA_BAIXO:
         if estado['pos_jogador'][1] < altura_mapa - 2:
-            estado['pos_jogador'][1] = estado['pos_jogador'][1] + 1
+            if not [estado['pos_jogador'][0],estado['pos_jogador'][1] + 1] in estado['paredes_no_jogo']:
+                estado['pos_jogador'][1] = estado['pos_jogador'][1] + 1
+            else:
+                estado['mensagem'] = 'parede no caminho'
+
+    # criando objetos
     for objeto in objetos:
         if objeto['posicao'] == estado['pos_jogador']:
             if objeto['tipo'] == CORACAO:
@@ -89,6 +113,12 @@ def atualiza_estado(estado, tecla):
                             estado['vidas'] = estado['vidas'] -1
                             estado['objetos'].remove(objeto)
                             estado['mensagem'] = 'voce perdeu uma vida!'
+        if objeto['posicao'] == estado['pos_jogador']:
+                        if objeto['tipo'] == MONSTRO:
+                            if estado['vidas'] > 0:
+                                estado['vidas'] = estado['vidas'] -1
+                                estado['objetos'].remove(objeto)
+                                estado['mensagem'] = 'voce perdeu uma vida!'
     if estado['vidas'] == 0:
         estado['tela_atual'] = SAIR
 
