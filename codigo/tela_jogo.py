@@ -59,25 +59,42 @@ def atualiza_estado(estado, tecla):
     # O seu código deve atualizar o dicionário "estado" com base na tecla apertada pelo jogador
     # Por exemplo, se o jogador apertar a seta para a esquerda (o valor da variável será "ESQUERDA"), 
     # o seu código deve atualizar o dicionário estado['pos_jogador'][0] -= 1
+    estado['mensagem'] = ''
     mapa = estado['mapa']
     largura_mapa = len(mapa[0])
     altura_mapa = len(mapa)
-    
+    objetos = estado['objetos']
     if tecla == motor.SETA_ESQUERDA:
-        if estado['pos_jogador'][0] > 0:
+        if estado['pos_jogador'][0] > 1:
             estado['pos_jogador'][0] = estado['pos_jogador'][0] - 1
     if tecla == motor.SETA_DIREITA:
-        if estado['pos_jogador'][0] <49:
+        if estado['pos_jogador'][0] < largura_mapa - 2:
             estado['pos_jogador'][0] = estado['pos_jogador'][0] + 1
     if tecla == motor.SETA_CIMA:
-        if estado['pos_jogador'][1] > 0:
+        if estado['pos_jogador'][1] > 1:
             estado['pos_jogador'][1] = estado['pos_jogador'][1] - 1
     if tecla == motor.SETA_BAIXO:
-        if estado['pos_jogador'][1] < 14:
+        if estado['pos_jogador'][1] < altura_mapa - 2:
             estado['pos_jogador'][1] = estado['pos_jogador'][1] + 1
+    for objeto in objetos:
+        if objeto['posicao'] == estado['pos_jogador']:
+            if objeto['tipo'] == CORACAO:
+                if estado['vidas'] < estado['max_vidas']:
+                    estado['vidas'] = estado['vidas'] + 1
+                    estado['mensagem'] = 'voce ganhou uma vida!'
+                    estado['objetos'].remove(objeto)
+        if objeto['posicao'] == estado['pos_jogador']:
+                    if objeto['tipo'] == ESPINHO:
+                        if estado['vidas'] > 0:
+                            estado['vidas'] = estado['vidas'] -1
+                            estado['objetos'].remove(objeto)
+                            estado['mensagem'] = 'voce perdeu uma vida!'
+    if estado['vidas'] == 0:
+        estado['tela_atual'] = SAIR
+
     # Mude o valor da chave 'tela_atual' para mudar de tela
     # Começamos apagando a mensagem anterior, pois ela já foi mostrada no frame anterior
-    estado['mensagem'] = ''
+    
 
     # Escreva seu código para atualizar o dicionário "estado" com base na tecla apertada pelo jogador aqui
     # APAGUE ESTA LINHA E ESCREVA SEU CÓDIGO AQUI
