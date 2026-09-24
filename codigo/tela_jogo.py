@@ -75,6 +75,7 @@ def atualiza_estado(estado, tecla):
     altura_mapa = len(mapa)
     objetos = estado['objetos']
     achou_monstro = ''
+    
     for objeto in objetos:
                 if [estado['pos_jogador'][0], estado['pos_jogador'][1] - 1] == objeto['posicao']:
                      if objeto['tipo'] == MONSTRO:
@@ -89,11 +90,25 @@ def atualiza_estado(estado, tecla):
                                     if objeto['tipo'] == MONSTRO:
                                         achou_monstro = 'sim na direita'    
 
-
     if tecla == motor.SETA_ESQUERDA:       
         if not [estado['pos_jogador'][0] - 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
             if achou_monstro != 'sim na esquerda':
                 estado['pos_jogador'][0] = estado['pos_jogador'][0] - 1
+            else:
+                for objeto in objetos:
+                    if objeto['posicao'] == [estado['pos_jogador'][0] - 1,estado['pos_jogador'][1]]:
+                        if objeto['tipo'] == MONSTRO:
+                            sorteado = random.random()
+                            if sorteado < objeto['probabilidade_de_ataque']:
+                                if estado['vidas'] > 0:
+                                    estado['vidas'] = estado['vidas'] -1
+                                    estado['mensagem'] = 'o monstro atacou voce!'
+                            else:
+                                if objeto['vida'] > 0:
+                                    objeto['vida'] = objeto['vida'] -1
+                                    estado['mensagem'] = 'voce atacou o monstro!'
+                                    if objeto['vida'] == 0:
+                                        estado['objetos'].remove(objeto)                   
         else:
             estado['mensagem'] = 'parede no caminho'
 
@@ -103,6 +118,21 @@ def atualiza_estado(estado, tecla):
         if not [estado['pos_jogador'][0] + 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
             if achou_monstro != 'sim na direita':
                 estado['pos_jogador'][0] = estado['pos_jogador'][0] + 1
+            else:
+                for objeto in objetos:
+                    if objeto['posicao'] == [estado['pos_jogador'][0] + 1,estado['pos_jogador'][1]]:
+                        if objeto['tipo'] == MONSTRO:
+                            sorteado = random.random()
+                            if sorteado < objeto['probabilidade_de_ataque']:
+                                if estado['vidas'] > 0:
+                                    estado['vidas'] = estado['vidas'] -1
+                                    estado['mensagem'] = 'o monstro atacou voce!'
+                            else:
+                                if objeto['vida'] > 0:
+                                    objeto['vida'] = objeto['vida'] -1
+                                    estado['mensagem'] = 'voce atacou o monstro!'
+                                    if objeto['vida'] == 0:
+                                        estado['objetos'].remove(objeto)                   
         else:
             estado['mensagem'] = 'parede no caminho'
 
@@ -111,6 +141,21 @@ def atualiza_estado(estado, tecla):
         if not [estado['pos_jogador'][0] ,estado['pos_jogador'][1] -1] in estado['paredes_no_jogo']:
             if achou_monstro != 'sim em cima':
                 estado['pos_jogador'][1] = estado['pos_jogador'][1] - 1
+            else:
+                for objeto in objetos:
+                    if objeto['posicao'] == [estado['pos_jogador'][0],estado['pos_jogador'][1] - 1]:
+                        if objeto['tipo'] == MONSTRO:
+                            sorteado = random.random()
+                            if sorteado < objeto['probabilidade_de_ataque']:
+                                if estado['vidas'] > 0:
+                                    estado['vidas'] = estado['vidas'] -1
+                                    estado['mensagem'] = 'o monstro atacou voce!'
+                            else:
+                                if objeto['vida'] > 0:
+                                    objeto['vida'] = objeto['vida'] -1
+                                    estado['mensagem'] = 'voce atacou o monstro!'
+                                    if objeto['vida'] == 0:
+                                        estado['objetos'].remove(objeto)                   
         else:
             estado['mensagem'] = 'parede no caminho'
 
@@ -122,18 +167,20 @@ def atualiza_estado(estado, tecla):
             if achou_monstro != 'sim em baixo':
                 estado['pos_jogador'][1] = estado['pos_jogador'][1] + 1
             else:
-                sorteado = random.random()
-                if sorteado < objeto['probabilidade_de_ataque']:
-                    if estado['vidas'] > 0:
-                       estado['vidas'] = estado['vidas'] -1
-                else:
-                    if objeto['vida'] > 0:
-                        objeto['vida'] = objeto['vida'] -1
-                        if objeto['vida'] == 0:
-                            estado['objeto'].remove(objeto)
-                    
-
-
+                for objeto in objetos:
+                    if objeto['posicao'] == [estado['pos_jogador'][0],estado['pos_jogador'][1] + 1]:
+                        if objeto['tipo'] == MONSTRO:
+                            sorteado = random.random()
+                            if sorteado < objeto['probabilidade_de_ataque']:
+                                if estado['vidas'] > 0:
+                                    estado['vidas'] = estado['vidas'] -1
+                                    estado['mensagem'] = 'o monstro atacou voce!'
+                            else:
+                                if objeto['vida'] > 0:
+                                    objeto['vida'] = objeto['vida'] -1
+                                    estado['mensagem'] = 'voce atacou o monstro!'
+                                    if objeto['vida'] == 0:
+                                        estado['objetos'].remove(objeto)                   
         else:
             estado['mensagem'] = 'parede no caminho'
 

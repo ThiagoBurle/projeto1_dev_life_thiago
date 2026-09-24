@@ -40,13 +40,13 @@ No nível básico você deve entender o código fornecido e implementar as segui
     - [x] Sorteia posições aleatórias para os monstros;
     - [x] Adiciona `'vida'` e `'probabilidade_de_ataque'` aos monstros;
     - [x] Mostra monstros na tela.
-- [ ] Implementa sistema de batalha:
-    - [ ] Verifica se a nova posição do jogador está ocupada por um monstro e impede o movimento;
-    - [ ] Sorteia um número aleatório;
-    - [ ] Verifica quem ataca quem e diminui as vidas do alvo;
-    - [ ] Se o jogador morrer, acaba o jogo;
-    - [ ] Se o monstro morrer, o monstro é removido da lista e o jogador avança para a posição do monstro;
-    - [ ] Mostra mensagem na tela.
+- [x] Implementa sistema de batalha:
+    - [x] Verifica se a nova posição do jogador está ocupada por um monstro e impede o movimento;
+    - [x] Sorteia um número aleatório;
+    - [x] Verifica quem ataca quem e diminui as vidas do alvo;
+    - [x] Se o jogador morrer, acaba o jogo;
+    - [x] Se o monstro morrer, o monstro é removido da lista e o jogador avança para a posição do monstro;
+    - [x] Mostra mensagem na tela.
 - [ ] Implementa movimentação aleatória dos monstros:
     - [ ] Sorteia um movimento para cada monstro e tenta andar naquela direção;
     - [ ] Atualiza a posição se for uma posição válida (dentro do mapa e desocupada).
