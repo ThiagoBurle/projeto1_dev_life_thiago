@@ -75,6 +75,9 @@ def atualiza_estado(estado, tecla):
     altura_mapa = len(mapa)
     objetos = estado['objetos']
     achou_monstro = ''
+    condicao = False
+    monstro_atacado = None
+
     
     for objeto in objetos:
                 if [estado['pos_jogador'][0], estado['pos_jogador'][1] - 1] == objeto['posicao']:
@@ -91,14 +94,17 @@ def atualiza_estado(estado, tecla):
                                         achou_monstro = 'sim na direita'    
 
     if tecla == motor.SETA_ESQUERDA:       
+        condicao = True
         if not [estado['pos_jogador'][0] - 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
             if achou_monstro != 'sim na esquerda':
                 estado['pos_jogador'][0] = estado['pos_jogador'][0] - 1
+                
             else:
                 for objeto in objetos:
                     if objeto['posicao'] == [estado['pos_jogador'][0] - 1,estado['pos_jogador'][1]]:
                         if objeto['tipo'] == MONSTRO:
                             sorteado = random.random()
+                            monstro_atacado = objeto
                             if sorteado < objeto['probabilidade_de_ataque']:
                                 if estado['vidas'] > 0:
                                     estado['vidas'] = estado['vidas'] -1
@@ -114,14 +120,16 @@ def atualiza_estado(estado, tecla):
 
    
     if tecla == motor.SETA_DIREITA:
-    
+        condicao = True
         if not [estado['pos_jogador'][0] + 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
             if achou_monstro != 'sim na direita':
                 estado['pos_jogador'][0] = estado['pos_jogador'][0] + 1
+                
             else:
                 for objeto in objetos:
                     if objeto['posicao'] == [estado['pos_jogador'][0] + 1,estado['pos_jogador'][1]]:
                         if objeto['tipo'] == MONSTRO:
+                            monstro_atacado = objeto
                             sorteado = random.random()
                             if sorteado < objeto['probabilidade_de_ataque']:
                                 if estado['vidas'] > 0:
@@ -138,13 +146,16 @@ def atualiza_estado(estado, tecla):
 
 
     if tecla == motor.SETA_CIMA:
+        condicao = True
         if not [estado['pos_jogador'][0] ,estado['pos_jogador'][1] -1] in estado['paredes_no_jogo']:
             if achou_monstro != 'sim em cima':
                 estado['pos_jogador'][1] = estado['pos_jogador'][1] - 1
+                
             else:
                 for objeto in objetos:
                     if objeto['posicao'] == [estado['pos_jogador'][0],estado['pos_jogador'][1] - 1]:
                         if objeto['tipo'] == MONSTRO:
+                            monstro_atacado = objeto
                             sorteado = random.random()
                             if sorteado < objeto['probabilidade_de_ataque']:
                                 if estado['vidas'] > 0:
@@ -158,18 +169,21 @@ def atualiza_estado(estado, tecla):
                                         estado['objetos'].remove(objeto)                   
         else:
             estado['mensagem'] = 'parede no caminho'
+        
 
 
     if tecla == motor.SETA_BAIXO:
-        
+        condicao = True
         
         if not [estado['pos_jogador'][0],estado['pos_jogador'][1] + 1] in estado['paredes_no_jogo']:
             if achou_monstro != 'sim em baixo':
                 estado['pos_jogador'][1] = estado['pos_jogador'][1] + 1
+            
             else:
                 for objeto in objetos:
                     if objeto['posicao'] == [estado['pos_jogador'][0],estado['pos_jogador'][1] + 1]:
                         if objeto['tipo'] == MONSTRO:
+                            monstro_atacado = objeto
                             sorteado = random.random()
                             if sorteado < objeto['probabilidade_de_ataque']:
                                 if estado['vidas'] > 0:
@@ -199,7 +213,35 @@ def atualiza_estado(estado, tecla):
                         if estado['vidas'] > 0:
                             estado['vidas'] = estado['vidas'] -1
                             estado['mensagem'] = 'voce perdeu uma vida!'
-        
+
+    
+
+    direcao_monstro = [motor.SETA_BAIXO, motor.SETA_CIMA,motor.SETA_ESQUERDA,motor.SETA_DIREITA]
+    if condicao == True:
+        for objeto in objetos:
+            if objeto['tipo'] == MONSTRO:
+                if objeto is monstro_atacado:
+                    continue
+                direcao = random.choice(direcao_monstro)
+                destino = [objeto['posicao'][0], objeto['posicao'][1]]
+                if direcao == motor.SETA_CIMA:
+                    destino[1] = destino[1] - 1
+                if direcao == motor.SETA_BAIXO:
+                    destino[1] = destino[1] + 1
+                if direcao == motor.SETA_ESQUERDA:
+                    destino[0] = destino[0] - 1
+                if direcao == motor.SETA_DIREITA:
+                    destino[0] = destino[0] + 1
+                livre = True
+                for outro in objetos:
+                    if outro['posicao'] == destino:
+                        livre = False
+                if estado['pos_jogador'] == destino:
+                    livre = False    
+
+                if livre:
+                    objeto['posicao'] = destino
+
                              
                             
 

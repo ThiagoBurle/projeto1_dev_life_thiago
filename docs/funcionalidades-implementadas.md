@@ -47,9 +47,9 @@ No nível básico você deve entender o código fornecido e implementar as segui
     - [x] Se o jogador morrer, acaba o jogo;
     - [x] Se o monstro morrer, o monstro é removido da lista e o jogador avança para a posição do monstro;
     - [x] Mostra mensagem na tela.
-- [ ] Implementa movimentação aleatória dos monstros:
-    - [ ] Sorteia um movimento para cada monstro e tenta andar naquela direção;
-    - [ ] Atualiza a posição se for uma posição válida (dentro do mapa e desocupada).
+- [x] Implementa movimentação aleatória dos monstros:
+    - [x] Sorteia um movimento para cada monstro e tenta andar naquela direção;
+    - [x] Atualiza a posição se for uma posição válida (dentro do mapa e desocupada).
 
 ### [Nível Avançado](avancado.md)
 
