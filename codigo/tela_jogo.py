@@ -23,8 +23,8 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
     dy = (altura_tela - altura_mapa) // 2
     for i in range(len(mapa)): 
         for j in range(len(mapa[i])):
-            fundo = VERDE_CLARO
-            frente = VERDE_CLARO
+            fundo = CINZA_CLARO
+            frente = CINZA_CLARO
             # v =  i + j 
             # if v%2 == 0:
             #     fundo = VERDE_ESCURO
@@ -36,12 +36,12 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
             if estado['vidas'] < estado['max_vidas']:
                 motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
             motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
-            motor.desenha_string(janela, pos_jogador[0] + dx,pos_jogador[1] + dy, JOGADOR , VERDE_CLARO, BRANCO)
+            motor.desenha_string(janela, pos_jogador[0] + dx,pos_jogador[1] + dy, JOGADOR , CINZA_CLARO, BRANCO)
 
 
     for objeto in obejetos:
         if objeto['tipo'] == PAREDE:
-            motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], MARROM_ESCURO, MARROM_MAIS_ESCURO)        
+            motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], CINZA_PEDRA_ESCURO, CINZA_PEDRA)        
 
 
     for objeto in obejetos:
