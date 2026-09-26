@@ -15,47 +15,50 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
     obejetos = estado['objetos']
     mapa = estado['mapa']
     pos_jogador = estado['pos_jogador']
+    pos_jogador_tela_escondida = estado['pos_jogador_tela_escondida']
     largura_mapa = len(mapa[0])
     altura_mapa = len(mapa)
     coracoes_vazios = estado['max_vidas'] - estado['vidas']
     posiçoes = estado['posicoes_ocupadas']
     dx = (largura_tela - largura_mapa)// 2
     dy = (altura_tela - altura_mapa) // 2
-    for i in range(len(mapa)): 
-        for j in range(len(mapa[i])):
-            fundo = CINZA_CLARO
-            frente = CINZA_CLARO
-            # v =  i + j 
-            # if v%2 == 0:
-            #     fundo = VERDE_ESCURO
-            #     frente = VERDE_CLARO
+    if estado['tela_atual'] != TELA_SECRETA:
+        for i in range(len(mapa)): 
+            for j in range(len(mapa[i])):
+                fundo = CINZA_CLARO
+                frente = CINZA_CLARO
+                # v =  i + j 
+                # if v%2 == 0:
+                #     fundo = VERDE_ESCURO
+                #     frente = VERDE_CLARO
+                
+                motor.desenha_string(janela, j + dx,i + dy, mapa[i][j], frente, fundo)
             
-            motor.desenha_string(janela, j + dx,i + dy, mapa[i][j], frente, fundo)
-           
-            motor.desenha_string(janela, 0 ,0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO )
-            if estado['vidas'] < estado['max_vidas']:
-                motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
-            motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
-            motor.desenha_string(janela, pos_jogador[0] + dx,pos_jogador[1] + dy, JOGADOR , CINZA_CLARO, BRANCO)
+                motor.desenha_string(janela, 0 ,0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO )
+                if estado['vidas'] < estado['max_vidas']:
+                    motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
+                motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
+                motor.desenha_string(janela, pos_jogador[0] + dx,pos_jogador[1] + dy, JOGADOR , CINZA_CLARO, BRANCO)
 
 
-    for objeto in obejetos:
-        if objeto['tipo'] == PAREDE:
-            motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], CINZA_PEDRA_ESCURO, CINZA_PEDRA)        
+        for objeto in obejetos:
+            if objeto['tipo'] == PAREDE:
+                motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], CINZA_PEDRA_ESCURO, CINZA_PEDRA)        
 
 
-    for objeto in obejetos:
-        if objeto['tipo'] == CORACAO:
-            motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERMELHO )
-        
-    for objeto in obejetos:
-            if objeto['tipo'] == ESPINHO:
-                motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERDE_ESCURO)
+        for objeto in obejetos:
+            if objeto['tipo'] == CORACAO:
+                motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERMELHO )
             
-    for objeto in obejetos:
-         if objeto['tipo'] == MONSTRO:
-                motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], frente , BRANCO)
-        
+        for objeto in obejetos:
+                if objeto['tipo'] == ESPINHO:
+                    motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERDE_ESCURO)
+                
+        for objeto in obejetos:
+            if objeto['tipo'] == MONSTRO:
+                    motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], frente , BRANCO)
+
+                         
                  
 
     
@@ -258,6 +261,41 @@ def atualiza_estado(estado, tecla):
     # Ao apertar a tecla 'i', o jogador deve ver o inventário
     if tecla == 'i':
         estado['tela_atual'] = TELA_INVENTARIO
+    if estado['pos_jogador'] == [93,20]:
+        estado['tela_atual'] = TELA_SECRETA
     # Termina o jogo se o jogador apertar ESC ou 'q'
     elif tecla == motor.ESCAPE or tecla =='q':
         estado['tela_atual'] = SAIR
+
+def desenha_tela_secreta(janela, estado, altura_tela, largura_tela):
+        mapa_escondido = estado['mapa_escondido']
+        largura_mapa_escondido = len(mapa_escondido[0])
+        altura_mapa_escondido = len(mapa_escondido)
+        obejetos = estado['objetos']
+        mapa = estado['mapa']
+        pos_jogador = estado['pos_jogador']
+        pos_jogador_tela_escondida = estado['pos_jogador_tela_escondida']
+        largura_mapa = len(mapa[0])
+        altura_mapa = len(mapa)
+        coracoes_vazios = estado['max_vidas'] - estado['vidas']
+        posiçoes = estado['posicoes_ocupadas']
+        dx = (largura_tela - largura_mapa)// 2
+        dy = (altura_tela - altura_mapa) // 2
+        deltax = (largura_tela - largura_mapa_escondido)// 2
+        deltay = (altura_tela - altura_mapa_escondido) // 2
+        for i in range(len(mapa_escondido)): 
+            for j in range(len(mapa_escondido[i])):
+                motor.desenha_string(janela, j + deltax,i + deltay, mapa_escondido[i][j], AZUL, AZUL)
+                motor.desenha_string(janela, 0 ,0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO )
+                if estado['vidas'] < estado['max_vidas']:
+                    motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
+                motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
+                motor.desenha_string(janela, pos_jogador_tela_escondida[0] + deltax,pos_jogador_tela_escondida[1] + deltay, JOGADOR , CINZA_CLARO, BRANCO)
+
+
+
+
+
+def atualiza_estado_secreta(estado, tecla):
+    if tecla == 'i':
+            estado['tela_atual'] = TELA_INVENTARIO

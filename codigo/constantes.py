@@ -23,6 +23,7 @@ CINZA_CLARO = [165, 168, 175]
 SAIR = 0
 TELA_JOGO = 1
 TELA_INVENTARIO = 2
+TELA_SECRETA = 3
 
 # Objetos
 # As constantes abaixo são os caracteres que representam cada objeto no mapa.
@@ -32,5 +33,8 @@ CORACAO = '❤'
 CORACAO_BRANCO = '🤍'
 ESPINHO = '#'
 MONSTRO = '👻'
+OGRO ='👹'
 PAREDE = '▣'
-ESPADA ='🥷🏻'
+JOGADOR_COM_ESPADA ='🥷🏻'
+CHEFAO = '🦖'
+MORCEGO = '🦇'

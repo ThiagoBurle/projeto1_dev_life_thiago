@@ -147,15 +147,46 @@ def inicializa_estado():
     
     largura_mapa = len(mapa[0])
     altura_mapa = len(mapa)
+
+    mapa_escondido = [
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+    [' '] * 30,
+           
+       
+     
+
+        
+        
+       
+    ]
+    
+    largura_mapa_escondido = len(mapa_escondido[0])
+    altura_mapa_escondido = len(mapa_escondido)
     
 
     
     # Você pode colocar o jogador em outro lugar, se preferir
-    pos_jogador = [largura_mapa//2, altura_mapa//2]  # Meio do mapa
+    pos_jogador = [largura_mapa//2, altura_mapa//2]
+    pos_jogador_tela_escondida =[15,1]  # Meio do mapa
     
     # Cria outros objetos do mapa
     posicoes_ocupadas = [pos_jogador]
     objetos = []
+    objetos_secretos = []
     for posicao in paredes_no_jogo:
         objetos.append({
                     'tipo': PAREDE,
@@ -185,7 +216,11 @@ def inicializa_estado():
         'mapa': mapa,
         'mensagem': '', # Use esta mensagem para mostrar mensagens ao jogador, como "Você perdeu uma vida" ou "Você ganhou uma vida"
         'posicoes_ocupadas': posicoes_ocupadas,
-        'paredes_no_jogo' : paredes_no_jogo
+        'paredes_no_jogo' : paredes_no_jogo,
+        'mapa_escondido' : mapa_escondido,
+        'objetos_secretos' : objetos_secretos,
+        'pos_jogador_tela_escondida': pos_jogador_tela_escondida,
+
         
         
 
