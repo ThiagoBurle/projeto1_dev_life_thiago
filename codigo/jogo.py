@@ -1,7 +1,7 @@
 import motor_grafico
 import tela_inventario
 import tela_jogo
-from constantes import SAIR, TELA_INVENTARIO, TELA_JOGO , TELA_SECRETA
+from constantes import SAIR, TELA_INVENTARIO, TELA_JOGO , TELA_SECRETA, TELA_INICIAL, TELA_PERDEU, TELA_CAMPEAO, TELA_INSTRUCOES
 from inicializacao import inicializa_estado
 
 
@@ -41,6 +41,22 @@ def jogo(janela, altura_tela, largura_tela):
             tela_jogo.desenha_tela_secreta(janela, estado, altura_tela, largura_tela)
             tecla_apertada = motor_grafico.pega_tecla_apertada(janela)
             tela_jogo.atualiza_estado_secreta(estado, tecla_apertada)
+        elif estado['tela_atual'] == TELA_INICIAL:
+            tela_jogo.desenha_tela_inicial(janela, estado, altura_tela, largura_tela)
+            tecla_apertada = motor_grafico.pega_tecla_apertada(janela)
+            tela_jogo.atualiza_estado_inicial(estado, tecla_apertada)
+        elif estado['tela_atual'] == TELA_PERDEU:
+            tela_jogo.desenha_tela_perdeu(janela, estado, altura_tela, largura_tela)
+            tecla_apertada = motor_grafico.pega_tecla_apertada(janela)
+            tela_jogo.atualiza_estado_perdeu(estado, tecla_apertada)
+        elif estado['tela_atual'] == TELA_CAMPEAO:
+            tela_jogo.desenha_tela_campeao(janela, estado, altura_tela, largura_tela)
+            tecla_apertada = motor_grafico.pega_tecla_apertada(janela)
+            tela_jogo.atualiza_estado_campeao(estado, tecla_apertada)
+        elif estado['tela_atual'] == TELA_INSTRUCOES:
+            tela_jogo.desenha_tela_instrucoes(janela, estado, altura_tela, largura_tela)
+            tecla_apertada = motor_grafico.pega_tecla_apertada(janela)
+            tela_jogo.atualiza_estado_instrucoes(estado, tecla_apertada)
 
 # Não se preocupe, você não precisa entender o que está acontecendo aqui.
 # É apenas uma forma de chamar a função jogo() usando a biblioteca curses.

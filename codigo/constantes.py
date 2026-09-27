@@ -24,6 +24,10 @@ SAIR = 0
 TELA_JOGO = 1
 TELA_INVENTARIO = 2
 TELA_SECRETA = 3
+TELA_INICIAL = 4
+TELA_PERDEU = 5
+TELA_CAMPEAO = 6
+TELA_INSTRUCOES = 7
 
 # Objetos
 # As constantes abaixo são os caracteres que representam cada objeto no mapa.

@@ -2,7 +2,78 @@ from constantes import *
 import motor_grafico as motor
 from inicializacao import gera_posicao_desocupada
 import random
+def desenha_tela_campeao(janela, estado, altura_tela, largura_tela):
+    mensagem = 'parabéns jogador voce eliminou todos os monstros, aperte q para sair'
+    motor.preenche_fundo(janela, PRETO)
+    motor.desenha_string(janela, largura_tela //2 - len(mensagem) // 2, altura_tela // 2, mensagem, PRETO, BRANCO)
+    motor.mostra_janela(janela)
 
+def atualiza_estado_campeao(estado , tecla):
+    if tecla == 'q':
+        estado['tela_anterior'] = TELA_CAMPEAO
+        estado['tela_atual'] = SAIR
+
+def desenha_tela_perdeu(janela, estado, altura_tela, largura_tela):
+    mensagem = 'os monstros dominaram o mapa aperte q para sair'
+    motor.preenche_fundo(janela, PRETO)
+    motor.desenha_string(janela, largura_tela //2 - len(mensagem) // 2, altura_tela // 2, mensagem, PRETO, BRANCO)
+    motor.mostra_janela(janela)
+
+def atualiza_estado_perdeu(estado , tecla):
+    if tecla == 'q':
+        estado['tela_anterior'] = TELA_PERDEU
+        estado['tela_atual'] = SAIR
+
+def desenha_tela_inicial(janela, estado, altura_tela, largura_tela):
+    mensagem = 'aperte a tecla j para jogar'
+    mensagem2 = 'aperte a tecla h para ver as instrucoes'
+    motor.preenche_fundo(janela, PRETO)
+    motor.desenha_string(janela, largura_tela // 2 - len(mensagem) // 2, altura_tela // 2, mensagem, PRETO, BRANCO)
+    motor.desenha_string(janela, largura_tela // 2 - len(mensagem2) // 2, altura_tela // 2 + 2, mensagem2, PRETO, BRANCO)
+    motor.mostra_janela(janela)
+
+
+def atualiza_estado_inicial(estado , tecla):
+    if tecla == 'j':
+        estado['tela_anterior'] = TELA_INICIAL
+        estado['tela_atual'] = TELA_JOGO
+    if tecla == 'h':
+        estado['tela_anterior'] = TELA_INICIAL
+        estado['tela_atual'] = TELA_INSTRUCOES
+
+
+def desenha_tela_instrucoes(janela, estado, altura_tela, largura_tela):
+    titulo = 'INSTRUCOES'
+    linhas = [
+        'setas: mover o personagem',
+        'coracao: ganha uma vida',
+        'espinho: perde uma vida',
+        'andar contra um monstro: comeca a batalha',
+        'i: abre o inventario',
+        'v: volta da sala secreta para o mapa',
+        'q ou esc: sai do jogo',
+        '',
+        'procure a passagem escondida no canto do mapa',
+        'la dentro tem uma espada e o chefao',
+        'sem a espada o chefao tira 3 vidas por golpe',
+        '',
+        'aperte j para comecar',
+    ]
+    motor.preenche_fundo(janela, PRETO)
+    motor.desenha_string(janela, largura_tela // 2 - len(titulo) // 2, 2, titulo, PRETO, BRANCO)
+    linha_atual = 4
+    for texto in linhas:
+        motor.desenha_string(janela, largura_tela // 2 - len(texto) // 2, linha_atual, texto, PRETO, BRANCO)
+        linha_atual = linha_atual + 1
+    motor.mostra_janela(janela)
+
+
+def atualiza_estado_instrucoes(estado , tecla):
+    if tecla == 'j':
+        estado['tela_anterior'] = TELA_INSTRUCOES
+        estado['tela_atual'] = TELA_JOGO
+    if tecla == motor.ESCAPE or tecla == 'q':
+        estado['tela_atual'] = SAIR
 
 def desenha_tela(janela, estado, altura_tela, largura_tela):
     motor.preenche_fundo(janela, PRETO)
@@ -14,6 +85,7 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
     altura_mapa = len(mapa)
     dx = (largura_tela - largura_mapa) // 2
     dy = (altura_tela - altura_mapa) // 2
+    
 
     for i in range(len(mapa)):
         for j in range(len(mapa[i])):
@@ -49,7 +121,8 @@ def atualiza_estado(estado, tecla):
     achou_monstro = ''
     condicao = False
     monstro_atacado = None
-    
+    objetos_secretos = estado['objetos_secretos']
+    monstros_vivos = 0
 
     for objeto in objetos:
         if objeto['tipo'] in TIPOS_MONSTRO:
@@ -82,6 +155,7 @@ def atualiza_estado(estado, tecla):
                     elif estado['tem_espada']:
                         objetos.remove(objeto)
                         estado['mensagem'] = 'voce matou o monstro com a espada!'
+                        monstros_vivos -= 1
                     else:
                         sorteado = random.random()
                         if sorteado < objeto['probabilidade_de_ataque']:
@@ -93,6 +167,7 @@ def atualiza_estado(estado, tecla):
                             if objeto['vida'] <= 0:
                                 objetos.remove(objeto)
                                 estado['mensagem'] = 'voce matou o monstro!'
+                                monstros_vivos -= 1
                     break
 
     if tecla == motor.SETA_DIREITA:
@@ -112,9 +187,11 @@ def atualiza_estado(estado, tecla):
                         if objeto['vida'] <= 0:
                             objetos.remove(objeto)
                             estado['mensagem'] = 'voce matou o ogro!'
+                            monstros_vivos -= 1
                     elif estado['tem_espada']:
                         objetos.remove(objeto)
                         estado['mensagem'] = 'voce matou o monstro com a espada!'
+                        monstros_vivos -= 1
                     else:
                         sorteado = random.random()
                         if sorteado < objeto['probabilidade_de_ataque']:
@@ -126,6 +203,7 @@ def atualiza_estado(estado, tecla):
                             if objeto['vida'] <= 0:
                                 objetos.remove(objeto)
                                 estado['mensagem'] = 'voce matou o monstro!'
+                                monstros_vivos -= 1
                     break
 
     if tecla == motor.SETA_CIMA:
@@ -145,9 +223,11 @@ def atualiza_estado(estado, tecla):
                         if objeto['vida'] <= 0:
                             objetos.remove(objeto)
                             estado['mensagem'] = 'voce matou o ogro!'
+                            monstros_vivos -= 1
                     elif estado['tem_espada']:
                         objetos.remove(objeto)
                         estado['mensagem'] = 'voce matou o monstro com a espada!'
+                        monstros_vivos -= 1
                     else:
                         sorteado = random.random()
                         if sorteado < objeto['probabilidade_de_ataque']:
@@ -159,6 +239,7 @@ def atualiza_estado(estado, tecla):
                             if objeto['vida'] <= 0:
                                 objetos.remove(objeto)
                                 estado['mensagem'] = 'voce matou o monstro!'
+                                monstros_vivos -= 1
                     break
 
     if tecla == motor.SETA_BAIXO:
@@ -175,12 +256,14 @@ def atualiza_estado(estado, tecla):
                     if estado['tem_espada'] and objeto['tipo'] == OGRO:
                         objeto['vida'] = objeto['vida'] - 2
                         estado['mensagem'] = 'voce acertou o ogro com a espada!'
+                        monstros_vivos -= 1
                         if objeto['vida'] <= 0:
                             objetos.remove(objeto)
                             estado['mensagem'] = 'voce matou o ogro!'
                     elif estado['tem_espada']:
                         objetos.remove(objeto)
                         estado['mensagem'] = 'voce matou o monstro com a espada!'
+                        monstros_vivos -= 1
                     else:
                         sorteado = random.random()
                         if sorteado < objeto['probabilidade_de_ataque']:
@@ -192,6 +275,7 @@ def atualiza_estado(estado, tecla):
                             if objeto['vida'] <= 0:
                                 objetos.remove(objeto)
                                 estado['mensagem'] = 'voce matou o monstro!'
+                                monstros_vivos -= 1
                     break
 
     for objeto in list(objetos):
@@ -249,7 +333,9 @@ def atualiza_estado(estado, tecla):
 
     if estado['vidas'] <= 0:
         estado['vidas'] = 0
-        estado['tela_atual'] = SAIR
+        estado['tela_anterior'] = TELA_JOGO
+        estado['tela_atual'] = TELA_PERDEU
+
 
     if tecla == 'i':
         estado['tela_anterior'] = TELA_JOGO
@@ -258,6 +344,21 @@ def atualiza_estado(estado, tecla):
         estado['tela_atual'] = SAIR
     elif pos_jogador == [93, 20]:
         estado['tela_atual'] = TELA_SECRETA
+
+
+    chefao_vivo = 0
+    for objeto in objetos_secretos:
+        if objeto['tipo'] == CHEFAO:
+            chefao_vivo = chefao_vivo + 1
+    
+    monstros_vivos = 0
+    for objeto in objetos:
+        if objeto['tipo'] in TIPOS_MONSTRO:
+            monstros_vivos = monstros_vivos + 1
+    
+    if monstros_vivos == 0 and chefao_vivo == 0:
+        estado['tela_anterior'] = TELA_JOGO
+        estado['tela_atual'] = TELA_CAMPEAO
 
 
 def desenha_tela_secreta(janela, estado, altura_tela, largura_tela):
@@ -305,6 +406,10 @@ def atualiza_estado_secreta(estado, tecla):
     estado['mensagem'] = ''
     pos = estado['pos_jogador_tela_escondida']
     objetos_secretos = estado['objetos_secretos']
+    mapa_escondido = estado['mapa_escondido']
+    objetos = estado['objetos']
+    chefao_vivo = 0
+    monstros_vivos = 0
 
     if tecla == 'i':
         estado['tela_anterior'] = TELA_SECRETA
@@ -358,6 +463,7 @@ def atualiza_estado_secreta(estado, tecla):
                         if objeto['vida'] <= 0:
                             objetos_secretos.remove(objeto)
                             estado['mensagem'] = 'voce derrotou o chefao!'
+                            chefao_vivo -= 1
                 else:
                     estado['vidas'] = estado['vidas'] - 3
                     estado['mensagem'] = 'sem a espada o chefao te arrasou! -3 vidas'
@@ -406,7 +512,22 @@ def atualiza_estado_secreta(estado, tecla):
                     livre = False
             if livre:
                 objeto['posicao'] = novo
-
+    
+    for objeto in objetos_secretos:
+        if objeto['tipo'] == CHEFAO:
+            chefao_vivo = chefao_vivo + 1
+    
+    
+    for objeto in objetos:
+        if objeto['tipo'] in TIPOS_MONSTRO:
+            monstros_vivos = monstros_vivos + 1
+    
+    if monstros_vivos == 0 and chefao_vivo == 0:
+        estado['tela_anterior'] = TELA_JOGO
+        estado['tela_atual'] = TELA_CAMPEAO
+                        
+                        
     if estado['vidas'] <= 0:
         estado['vidas'] = 0
-        estado['tela_atual'] = SAIR
+        estado['tela_anterior'] = TELA_JOGO
+        estado['tela_atual'] = TELA_PERDEU

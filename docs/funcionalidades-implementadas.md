@@ -62,5 +62,5 @@ No nível básico você deve entender o código fornecido e implementar as segui
 - [ ] Funcionalidade 7: Equipamento e limite de mochila;
 - [ ] Funcionalidade 8: Mapa em arquivo;
 - [ ] Funcionalidade 9: Monstro cobrinha;
-- [ ] Funcionalidade 10: Telas adicionais;
+- [x] Funcionalidade 10: Telas adicionais;
 - [ ] Funcionalidade 11: [Sua sugestão validada por um professor - INDIQUE AQUI O NOME DO PROFESSOR QUE VALIDOU SUA IDEIA].

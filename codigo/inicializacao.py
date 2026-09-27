@@ -276,7 +276,7 @@ def inicializa_estado():
     
     
     return {
-        'tela_atual': TELA_JOGO,
+        'tela_atual': TELA_INICIAL,
         'tela_anterior': TELA_JOGO,
         'pos_jogador': pos_jogador,
         'vidas': 5,  # Quantidade atual de vidas do jogador - ele pode perder vidas ao colidir com espinhos ou ganhar vidas ao pegar corações
