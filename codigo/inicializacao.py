@@ -70,7 +70,30 @@ paredes_no_jogo = [
     [82,22], [83,22], [84,22], [85,22], [86,22], [87,22], [88,22], [89,22], [90,22], [91,22],
     [92,22], [93,22], [94,22], [95,22], [96,22], [97,22], [98,22], [99,22],
 ]
-
+paredes_sala_secreta = [
+    [0,0], [0,15], [1,0], [1,15], [2,0], [2,15], [3,0], [3,15],
+    [4,0], [4,15], [5,0], [5,15], [6,0], [6,15], [7,0], [7,15],
+    [8,0], [8,15], [9,0], [9,15], [10,0], [10,15], [11,0], [11,15],
+    [12,0], [12,15], [13,0], [13,15], [14,0], [14,15], [15,0], [15,15],
+    [16,0], [16,15], [17,0], [17,15], [18,0], [18,15], [19,0], [19,15],
+    [20,0], [20,15], [21,0], [21,15], [22,0], [22,15], [23,0], [23,15],
+    [24,0], [24,15], [25,0], [25,15], [26,0], [26,15], [27,0], [27,15],
+    [28,0], [28,15], [29,0], [29,15], [0,1], [29,1], [0,2], [29,2],
+    [0,3], [29,3], [0,4], [29,4], [0,5], [29,5], [0,6], [29,6],
+    [0,7], [29,7], [0,8], [29,8], [0,9], [29,9], [0,10], [29,10],
+    [0,11], [29,11], [0,12], [29,12], [0,13], [29,13], [0,14], [29,14],
+    [4,3], [5,3], [4,4], [25,3], [24,3], [25,4], [4,12], [5,12],
+    [4,11], [25,12], [24,12], [25,11], [9,6], [9,7], [9,8], [9,9],
+    [20,6], [20,7], [20,8], [20,9], [14,13], [15,13], [16,13], [2,7],
+    [2,8], [27,7], [27,8],
+]
+area_da_portinha = [
+    [92,11], [93,11], [94,11], [93,12], [93,13], [93,14], [93,15],
+    [93,16], [93,17], [93,18], [90,19], [91,19], [92,19], [93,19],
+    [94,19], [95,19], [96,19], [90,20], [91,20], [92,20], [93,20],
+    [94,20], [95,20], [96,20], [90,21], [91,21], [92,21], [93,21],
+    [94,21], [95,21], [96,21],
+]
 def gera_posicao_desocupada(posicoes_ocupadas, largura_mapa, altura_mapa):
     x = randint(1, largura_mapa-2)
     y = randint(1, altura_mapa-2)
@@ -185,6 +208,10 @@ def inicializa_estado():
     
     # Cria outros objetos do mapa
     posicoes_ocupadas = [pos_jogador]
+    posicoes_ocupadas_secreta = [15 , 1]
+    for posicao in area_da_portinha:
+            posicoes_ocupadas.append(posicao)
+    
     objetos = []
     objetos_secretos = []
     for posicao in paredes_no_jogo:
@@ -195,11 +222,12 @@ def inicializa_estado():
                 })
         posicoes_ocupadas.append(posicao)
     
-        
+        posicoes_ocupadas.append
 
     objetos += gera_objetos(15, CORACAO, VERMELHO, largura_mapa, altura_mapa, posicoes_ocupadas)
     objetos += gera_objetos(25, ESPINHO, VERDE_CLARO, largura_mapa, altura_mapa, posicoes_ocupadas)
-    objetos += gera_objetos(10, MONSTRO, BRANCO, largura_mapa, altura_mapa, posicoes_ocupadas)
+    objetos += gera_objetos(6, MONSTRO, BRANCO, largura_mapa, altura_mapa, posicoes_ocupadas)
+    objetos += gera_objetos(2, CORACAO, VERMELHO, largura_mapa_escondido, altura_mapa_escondido, posicoes_ocupadas_secreta)
 
     for objeto in objetos:
             if objeto['tipo'] == MONSTRO:

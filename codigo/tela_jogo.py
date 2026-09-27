@@ -46,15 +46,15 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
                 motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], CINZA_PEDRA_ESCURO, CINZA_PEDRA)        
 
 
-        for objeto in obejetos:
+        
             if objeto['tipo'] == CORACAO:
                 motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERMELHO )
             
-        for objeto in obejetos:
+        
                 if objeto['tipo'] == ESPINHO:
                     motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERDE_ESCURO)
                 
-        for objeto in obejetos:
+       
             if objeto['tipo'] == MONSTRO:
                     motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], frente , BRANCO)
 
@@ -283,6 +283,7 @@ def desenha_tela_secreta(janela, estado, altura_tela, largura_tela):
         dy = (altura_tela - altura_mapa) // 2
         deltax = (largura_tela - largura_mapa_escondido)// 2
         deltay = (altura_tela - altura_mapa_escondido) // 2
+        motor.preenche_fundo(janela, PRETO)
         for i in range(len(mapa_escondido)): 
             for j in range(len(mapa_escondido[i])):
                 motor.desenha_string(janela, j + deltax,i + deltay, mapa_escondido[i][j], AZUL, AZUL)
@@ -290,12 +291,24 @@ def desenha_tela_secreta(janela, estado, altura_tela, largura_tela):
                 if estado['vidas'] < estado['max_vidas']:
                     motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
                 motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
-                motor.desenha_string(janela, pos_jogador_tela_escondida[0] + deltax,pos_jogador_tela_escondida[1] + deltay, JOGADOR , CINZA_CLARO, BRANCO)
+                motor.desenha_string(janela, pos_jogador_tela_escondida[0] + deltax,pos_jogador_tela_escondida[1] + deltay, JOGADOR , AZUL, BRANCO)
+        motor.mostra_janela(janela)
 
-
+        
 
 
 
 def atualiza_estado_secreta(estado, tecla):
+    
+    pos = estado['pos_jogador_tela_escondida']
+
     if tecla == 'i':
-            estado['tela_atual'] = TELA_INVENTARIO
+        estado['tela_atual'] = TELA_INVENTARIO
+    if tecla == motor.SETA_ESQUERDA:
+        pos[0] = pos[0] - 1
+    if tecla == motor.SETA_DIREITA:
+        pos[0] = pos[0] + 1
+    if tecla == motor.SETA_CIMA:
+        pos[1] = pos[1] - 1
+    if tecla == motor.SETA_BAIXO:
+        pos[1] = pos[1] + 1
