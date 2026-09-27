@@ -146,28 +146,23 @@ def atualiza_estado(estado, tecla):
             for objeto in objetos:
                 if objeto['tipo'] in TIPOS_MONSTRO and objeto['posicao'] == destino:
                     monstro_atacado = objeto
-                    if estado['tem_espada'] and objeto['tipo'] == OGRO:
-                        objeto['vida'] = objeto['vida'] - 2
-                        estado['mensagem'] = 'voce acertou o ogro com a espada!'
+                    chance = objeto['probabilidade_de_ataque']
+                    dano = 1
+                    if estado['tem_espada']:
+                        dano = 2
+                    if estado['espadas_usadas'] >= 2:
+                        chance = chance * 0.75
+                    sorteado = random.random()
+                    if sorteado < chance:
+                        estado['vidas'] = estado['vidas'] - 1
+                        estado['mensagem'] = 'o monstro atacou voce!'
+                    else:
+                        objeto['vida'] = objeto['vida'] - dano
+                        estado['mensagem'] = 'voce atacou o monstro!'
                         if objeto['vida'] <= 0:
                             objetos.remove(objeto)
-                            estado['mensagem'] = 'voce matou o ogro!'
-                    elif estado['tem_espada']:
-                        objetos.remove(objeto)
-                        estado['mensagem'] = 'voce matou o monstro com a espada!'
-                        monstros_vivos -= 1
-                    else:
-                        sorteado = random.random()
-                        if sorteado < objeto['probabilidade_de_ataque']:
-                            estado['vidas'] = estado['vidas'] - 1
-                            estado['mensagem'] = 'o monstro atacou voce!'
-                        else:
-                            objeto['vida'] = objeto['vida'] - 1
-                            estado['mensagem'] = 'voce atacou o monstro!'
-                            if objeto['vida'] <= 0:
-                                objetos.remove(objeto)
-                                estado['mensagem'] = 'voce matou o monstro!'
-                                monstros_vivos -= 1
+                            estado['mensagem'] = 'voce matou o monstro!'
+                            monstros_vivos -= 1
                     break
 
     if tecla == motor.SETA_DIREITA:
@@ -181,29 +176,23 @@ def atualiza_estado(estado, tecla):
             for objeto in objetos:
                 if objeto['tipo'] in TIPOS_MONSTRO and objeto['posicao'] == destino:
                     monstro_atacado = objeto
-                    if estado['tem_espada'] and objeto['tipo'] == OGRO:
-                        objeto['vida'] = objeto['vida'] - 2
-                        estado['mensagem'] = 'voce acertou o ogro com a espada!'
+                    chance = objeto['probabilidade_de_ataque']
+                    dano = 1
+                    if estado['tem_espada']:
+                        dano = 2
+                    if estado['espadas_usadas'] >= 2:
+                        chance = chance * 0.75
+                    sorteado = random.random()
+                    if sorteado < chance:
+                        estado['vidas'] = estado['vidas'] - 1
+                        estado['mensagem'] = 'o monstro atacou voce!'
+                    else:
+                        objeto['vida'] = objeto['vida'] - dano
+                        estado['mensagem'] = 'voce atacou o monstro!'
                         if objeto['vida'] <= 0:
                             objetos.remove(objeto)
-                            estado['mensagem'] = 'voce matou o ogro!'
+                            estado['mensagem'] = 'voce matou o monstro!'
                             monstros_vivos -= 1
-                    elif estado['tem_espada']:
-                        objetos.remove(objeto)
-                        estado['mensagem'] = 'voce matou o monstro com a espada!'
-                        monstros_vivos -= 1
-                    else:
-                        sorteado = random.random()
-                        if sorteado < objeto['probabilidade_de_ataque']:
-                            estado['vidas'] = estado['vidas'] - 1
-                            estado['mensagem'] = 'o monstro atacou voce!'
-                        else:
-                            objeto['vida'] = objeto['vida'] - 1
-                            estado['mensagem'] = 'voce atacou o monstro!'
-                            if objeto['vida'] <= 0:
-                                objetos.remove(objeto)
-                                estado['mensagem'] = 'voce matou o monstro!'
-                                monstros_vivos -= 1
                     break
 
     if tecla == motor.SETA_CIMA:
@@ -217,29 +206,23 @@ def atualiza_estado(estado, tecla):
             for objeto in objetos:
                 if objeto['tipo'] in TIPOS_MONSTRO and objeto['posicao'] == destino:
                     monstro_atacado = objeto
-                    if estado['tem_espada'] and objeto['tipo'] == OGRO:
-                        objeto['vida'] = objeto['vida'] - 2
-                        estado['mensagem'] = 'voce acertou o ogro com a espada!'
+                    chance = objeto['probabilidade_de_ataque']
+                    dano = 1
+                    if estado['tem_espada']:
+                        dano = 2
+                    if estado['espadas_usadas'] >= 2:
+                        chance = chance * 0.75
+                    sorteado = random.random()
+                    if sorteado < chance:
+                        estado['vidas'] = estado['vidas'] - 1
+                        estado['mensagem'] = 'o monstro atacou voce!'
+                    else:
+                        objeto['vida'] = objeto['vida'] - dano
+                        estado['mensagem'] = 'voce atacou o monstro!'
                         if objeto['vida'] <= 0:
                             objetos.remove(objeto)
-                            estado['mensagem'] = 'voce matou o ogro!'
+                            estado['mensagem'] = 'voce matou o monstro!'
                             monstros_vivos -= 1
-                    elif estado['tem_espada']:
-                        objetos.remove(objeto)
-                        estado['mensagem'] = 'voce matou o monstro com a espada!'
-                        monstros_vivos -= 1
-                    else:
-                        sorteado = random.random()
-                        if sorteado < objeto['probabilidade_de_ataque']:
-                            estado['vidas'] = estado['vidas'] - 1
-                            estado['mensagem'] = 'o monstro atacou voce!'
-                        else:
-                            objeto['vida'] = objeto['vida'] - 1
-                            estado['mensagem'] = 'voce atacou o monstro!'
-                            if objeto['vida'] <= 0:
-                                objetos.remove(objeto)
-                                estado['mensagem'] = 'voce matou o monstro!'
-                                monstros_vivos -= 1
                     break
 
     if tecla == motor.SETA_BAIXO:
@@ -253,29 +236,23 @@ def atualiza_estado(estado, tecla):
             for objeto in objetos:
                 if objeto['tipo'] in TIPOS_MONSTRO and objeto['posicao'] == destino:
                     monstro_atacado = objeto
-                    if estado['tem_espada'] and objeto['tipo'] == OGRO:
-                        objeto['vida'] = objeto['vida'] - 2
-                        estado['mensagem'] = 'voce acertou o ogro com a espada!'
-                        monstros_vivos -= 1
+                    chance = objeto['probabilidade_de_ataque']
+                    dano = 1
+                    if estado['tem_espada']:
+                        dano = 2
+                    if estado['espadas_usadas'] >= 2:
+                        chance = chance * 0.75
+                    sorteado = random.random()
+                    if sorteado < chance:
+                        estado['vidas'] = estado['vidas'] - 1
+                        estado['mensagem'] = 'o monstro atacou voce!'
+                    else:
+                        objeto['vida'] = objeto['vida'] - dano
+                        estado['mensagem'] = 'voce atacou o monstro!'
                         if objeto['vida'] <= 0:
                             objetos.remove(objeto)
-                            estado['mensagem'] = 'voce matou o ogro!'
-                    elif estado['tem_espada']:
-                        objetos.remove(objeto)
-                        estado['mensagem'] = 'voce matou o monstro com a espada!'
-                        monstros_vivos -= 1
-                    else:
-                        sorteado = random.random()
-                        if sorteado < objeto['probabilidade_de_ataque']:
-                            estado['vidas'] = estado['vidas'] - 1
-                            estado['mensagem'] = 'o monstro atacou voce!'
-                        else:
-                            objeto['vida'] = objeto['vida'] - 1
-                            estado['mensagem'] = 'voce atacou o monstro!'
-                            if objeto['vida'] <= 0:
-                                objetos.remove(objeto)
-                                estado['mensagem'] = 'voce matou o monstro!'
-                                monstros_vivos -= 1
+                            estado['mensagem'] = 'voce matou o monstro!'
+                            monstros_vivos -= 1
                     break
 
     for objeto in list(objetos):
@@ -384,6 +361,8 @@ def desenha_tela_secreta(janela, estado, altura_tela, largura_tela):
             motor.desenha_string(janela, objeto['posicao'][0] + deltax, objeto['posicao'][1] + deltay, objeto['tipo'], AZUL, VERMELHO)
         if objeto['tipo'] == ESPADA:
             motor.desenha_string(janela, objeto['posicao'][0] + deltax, objeto['posicao'][1] + deltay, objeto['tipo'], AZUL, AMARELO)
+        if objeto['tipo'] == ESCUDO:
+            motor.desenha_string(janela, objeto['posicao'][0] + deltax, objeto['posicao'][1] + deltay, objeto['tipo'], AZUL, CINZA_CLARO)
         if objeto['tipo'] == CHEFAO:
             motor.desenha_string(janela, objeto['posicao'][0] + deltax, objeto['posicao'][1] + deltay, '╠', AZUL, ROXO)
             motor.desenha_string(janela, objeto['posicao'][0] + 3 + deltax, objeto['posicao'][1] + deltay, '╣', AZUL, ROXO)
@@ -476,9 +455,12 @@ def atualiza_estado_secreta(estado, tecla):
                     estado['mensagem'] = 'sua vida ja esta cheia'
             if objeto['tipo'] == ESPADA:
                 objetos_secretos.remove(objeto)
-                estado['tem_espada'] = True
                 estado['inventario'].append(ESPADA)
                 estado['mensagem'] = 'voce pegou a espada!'
+            if objeto['tipo'] == ESCUDO:
+                objetos_secretos.remove(objeto)
+                estado['inventario'].append(ESCUDO)
+                estado['mensagem'] = 'voce pegou o escudo!'
             break
 
     if bloqueado == False:

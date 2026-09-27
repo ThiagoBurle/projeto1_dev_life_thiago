@@ -238,14 +238,14 @@ def inicializa_estado():
 
     for objeto in objetos:
         if objeto['tipo'] == MONSTRO:
-            objeto['vida'] = 5
-            objeto['probabilidade_de_ataque'] = 0.3
+            objeto['vida'] = 6
+            objeto['probabilidade_de_ataque'] = 0.45
         if objeto['tipo'] == MORCEGO:
-            objeto['vida'] = 2
-            objeto['probabilidade_de_ataque'] = 0.5
+            objeto['vida'] = 3
+            objeto['probabilidade_de_ataque'] = 0.55
         if objeto['tipo'] == OGRO:
-            objeto['vida'] = 8
-            objeto['probabilidade_de_ataque'] = 0.4
+            objeto['vida'] = 9
+            objeto['probabilidade_de_ataque'] = 0.45
 
     for posicao in [[25, 8], [15, 12]]:
         objetos_secretos.append({
@@ -255,12 +255,21 @@ def inicializa_estado():
         })
         posicoes_ocupadas_secreta.append(posicao)
 
-    objetos_secretos.append({
-        'tipo': ESPADA,
-        'posicao': [4, 8],
-        'cor': AMARELO,
-    })
-    posicoes_ocupadas_secreta.append([4, 8])
+    for posicao in [[4, 8], [25, 10]]:
+        objetos_secretos.append({
+            'tipo': ESPADA,
+            'posicao': posicao,
+            'cor': AMARELO,
+        })
+        posicoes_ocupadas_secreta.append(posicao)
+
+    for posicao in [[7, 3], [22, 12]]:
+        objetos_secretos.append({
+            'tipo': ESCUDO,
+            'posicao': posicao,
+            'cor': AZUL,
+        })
+        posicoes_ocupadas_secreta.append(posicao)
 
     objetos_secretos.append({
         'tipo': CHEFAO,
@@ -292,7 +301,9 @@ def inicializa_estado():
         'posicoes_ocupadas_secreta': posicoes_ocupadas_secreta,
         'paredes_sala_secreta': paredes_sala_secreta,
         'tem_espada': False,
-        'inventario': []
+        'espadas_usadas': 0,
+        'inventario': [],
+        'mensagem_inventario' : ''
         
 
         
