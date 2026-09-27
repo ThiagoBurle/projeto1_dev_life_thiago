@@ -1,314 +1,412 @@
-from constantes import *  # Você pode usar as constantes definidas em constantes.py, se achar útil
-                          # Por exemplo, usar a constante CORACAO é o mesmo que colocar a string '❤'
-                          # diretamente no código
-import motor_grafico as motor  # Utilize as funções do arquivo motor_grafico.py para desenhar na tela
-                               # Por exemplo: motor.preenche_fundo(janela, [0, 0, 0]) preenche o fundo de preto
+from constantes import *
+import motor_grafico as motor
 from inicializacao import gera_posicao_desocupada
- # O seu código deve desenhar a tela do jogo aqui a partir dos valores no dicionário "estado"
-    # APAGUE ESTA LINHA E A LINHA ABAIXO E ESCREVA SEU CÓDIGO AQUI
 import random
+
+
 def desenha_tela(janela, estado, altura_tela, largura_tela):
-    # Utilize o dicionário estado para saber onde o jogador e os outros objetos estão.
-    # Por exemplo, para saber a posição do jogador, use estado['pos_jogador']
-    # O mapa esta armazenado em estado['mapa'].
     motor.preenche_fundo(janela, PRETO)
-    obejetos = estado['objetos']
+    objetos = estado['objetos']
     mapa = estado['mapa']
     pos_jogador = estado['pos_jogador']
-    pos_jogador_tela_escondida = estado['pos_jogador_tela_escondida']
+    coracoes_vazios = estado['max_vidas'] - estado['vidas']
     largura_mapa = len(mapa[0])
     altura_mapa = len(mapa)
-    coracoes_vazios = estado['max_vidas'] - estado['vidas']
-    posiçoes = estado['posicoes_ocupadas']
-    dx = (largura_tela - largura_mapa)// 2
+    dx = (largura_tela - largura_mapa) // 2
     dy = (altura_tela - altura_mapa) // 2
-    if estado['tela_atual'] != TELA_SECRETA:
-        for i in range(len(mapa)): 
-            for j in range(len(mapa[i])):
-                fundo = CINZA_CLARO
-                frente = CINZA_CLARO
-                # v =  i + j 
-                # if v%2 == 0:
-                #     fundo = VERDE_ESCURO
-                #     frente = VERDE_CLARO
-                
-                motor.desenha_string(janela, j + dx,i + dy, mapa[i][j], frente, fundo)
-            
-                motor.desenha_string(janela, 0 ,0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO )
-                if estado['vidas'] < estado['max_vidas']:
-                    motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
-                motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
-                motor.desenha_string(janela, pos_jogador[0] + dx,pos_jogador[1] + dy, JOGADOR , CINZA_CLARO, BRANCO)
 
+    for i in range(len(mapa)):
+        for j in range(len(mapa[i])):
+            motor.desenha_string(janela, j + dx, i + dy, mapa[i][j], CINZA_CLARO, CINZA_CLARO)
 
-        for objeto in obejetos:
-            if objeto['tipo'] == PAREDE:
-                motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], CINZA_PEDRA_ESCURO, CINZA_PEDRA)        
+    for objeto in objetos:
+        if objeto['tipo'] == PAREDE:
+            motor.desenha_string(janela, objeto['posicao'][0] + dx, objeto['posicao'][1] + dy, objeto['tipo'], CINZA_PEDRA_ESCURO, CINZA_PEDRA)
+        if objeto['tipo'] == CORACAO:
+            motor.desenha_string(janela, objeto['posicao'][0] + dx, objeto['posicao'][1] + dy, objeto['tipo'], CINZA_CLARO, VERMELHO)
+        if objeto['tipo'] == ESPINHO:
+            motor.desenha_string(janela, objeto['posicao'][0] + dx, objeto['posicao'][1] + dy, objeto['tipo'], CINZA_CLARO, VERDE_ESCURO)
+        if objeto['tipo'] in TIPOS_MONSTRO:
+            motor.desenha_string(janela, objeto['posicao'][0] + dx, objeto['posicao'][1] + dy, objeto['tipo'], CINZA_CLARO, objeto['cor'])
 
+    motor.desenha_string(janela, 0, 0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO)
+    if estado['vidas'] < estado['max_vidas']:
+        motor.desenha_string(janela, estado['vidas'] * 2, 0, coracoes_vazios * CORACAO_BRANCO, PRETO, BRANCO)
+    motor.desenha_string(janela, 0, altura_tela - 1, estado['mensagem'], PRETO, BRANCO)
 
-        
-            if objeto['tipo'] == CORACAO:
-                motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERMELHO )
-            
-        
-                if objeto['tipo'] == ESPINHO:
-                    motor.desenha_string(janela, objeto['posicao'][0]+dx,objeto['posicao'][1]+dy,objeto['tipo'], frente, VERDE_ESCURO)
-                
-       
-            if objeto['tipo'] == MONSTRO:
-                    motor.desenha_string(janela, objeto['posicao'][0]+dx, objeto['posicao'][1]+dy, objeto['tipo'], frente , BRANCO)
+    if estado['tem_espada']:
+        motor.desenha_string(janela, pos_jogador[0] + dx, pos_jogador[1] + dy, JOGADOR_COM_ESPADA, CINZA_CLARO, BRANCO)
+    else:
+        motor.desenha_string(janela, pos_jogador[0] + dx, pos_jogador[1] + dy, JOGADOR, CINZA_CLARO, BRANCO)
 
-                         
-                 
-
-    
-
-
-
-    
+    motor.mostra_janela(janela)
 
 
 def atualiza_estado(estado, tecla):
-    # O seu código deve atualizar o dicionário "estado" com base na tecla apertada pelo jogador
-    # Por exemplo, se o jogador apertar a seta para a esquerda (o valor da variável será "ESQUERDA"), 
-    # o seu código deve atualizar o dicionário estado['pos_jogador'][0] -= 1
     estado['mensagem'] = ''
-    mapa = estado['mapa']
-    largura_mapa = len(mapa[0])
-    altura_mapa = len(mapa)
     objetos = estado['objetos']
+    pos_jogador = estado['pos_jogador']
     achou_monstro = ''
     condicao = False
     monstro_atacado = None
-
     
+
     for objeto in objetos:
-                if [estado['pos_jogador'][0], estado['pos_jogador'][1] - 1] == objeto['posicao']:
-                     if objeto['tipo'] == MONSTRO:
-                          achou_monstro = 'sim em cima'
-                if [estado['pos_jogador'][0], estado['pos_jogador'][1]+1] == objeto['posicao']:
-                    if objeto['tipo'] == MONSTRO:
-                        achou_monstro = 'sim em baixo'
-                if [estado['pos_jogador'][0] -1, estado['pos_jogador'][1]] == objeto['posicao']:
-                    if objeto['tipo'] == MONSTRO:
-                        achou_monstro = 'sim na esquerda'
-                if [estado['pos_jogador'][0] + 1, estado['pos_jogador'][1]] == objeto['posicao']:
-                                    if objeto['tipo'] == MONSTRO:
-                                        achou_monstro = 'sim na direita'    
+        if objeto['tipo'] in TIPOS_MONSTRO:
+            if [pos_jogador[0], pos_jogador[1] - 1] == objeto['posicao']:
+                achou_monstro = 'sim em cima'
+            if [pos_jogador[0], pos_jogador[1] + 1] == objeto['posicao']:
+                achou_monstro = 'sim em baixo'
+            if [pos_jogador[0] - 1, pos_jogador[1]] == objeto['posicao']:
+                achou_monstro = 'sim na esquerda'
+            if [pos_jogador[0] + 1, pos_jogador[1]] == objeto['posicao']:
+                achou_monstro = 'sim na direita'
 
-    if tecla == motor.SETA_ESQUERDA:       
+    if tecla == motor.SETA_ESQUERDA:
         condicao = True
-        if not [estado['pos_jogador'][0] - 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
-            if achou_monstro != 'sim na esquerda':
-                estado['pos_jogador'][0] = estado['pos_jogador'][0] - 1
-                
-            else:
-                for objeto in objetos:
-                    if objeto['posicao'] == [estado['pos_jogador'][0] - 1,estado['pos_jogador'][1]]:
-                        if objeto['tipo'] == MONSTRO:
-                            sorteado = random.random()
-                            monstro_atacado = objeto
-                            if sorteado < objeto['probabilidade_de_ataque']:
-                                if estado['vidas'] > 0:
-                                    estado['vidas'] = estado['vidas'] -1
-                                    estado['mensagem'] = 'o monstro atacou voce!'
-                            else:
-                                if objeto['vida'] > 0:
-                                    objeto['vida'] = objeto['vida'] -1
-                                    estado['mensagem'] = 'voce atacou o monstro!'
-                                    if objeto['vida'] == 0:
-                                        estado['objetos'].remove(objeto)                   
-        else:
+        destino = [pos_jogador[0] - 1, pos_jogador[1]]
+        if destino in estado['paredes_no_jogo']:
             estado['mensagem'] = 'parede no caminho'
+        elif achou_monstro != 'sim na esquerda':
+            pos_jogador[0] = pos_jogador[0] - 1
+        else:
+            for objeto in objetos:
+                if objeto['tipo'] in TIPOS_MONSTRO and objeto['posicao'] == destino:
+                    monstro_atacado = objeto
+                    if estado['tem_espada'] and objeto['tipo'] == OGRO:
+                        objeto['vida'] = objeto['vida'] - 2
+                        estado['mensagem'] = 'voce acertou o ogro com a espada!'
+                        if objeto['vida'] <= 0:
+                            objetos.remove(objeto)
+                            estado['mensagem'] = 'voce matou o ogro!'
+                    elif estado['tem_espada']:
+                        objetos.remove(objeto)
+                        estado['mensagem'] = 'voce matou o monstro com a espada!'
+                    else:
+                        sorteado = random.random()
+                        if sorteado < objeto['probabilidade_de_ataque']:
+                            estado['vidas'] = estado['vidas'] - 1
+                            estado['mensagem'] = 'o monstro atacou voce!'
+                        else:
+                            objeto['vida'] = objeto['vida'] - 1
+                            estado['mensagem'] = 'voce atacou o monstro!'
+                            if objeto['vida'] <= 0:
+                                objetos.remove(objeto)
+                                estado['mensagem'] = 'voce matou o monstro!'
+                    break
 
-   
     if tecla == motor.SETA_DIREITA:
         condicao = True
-        if not [estado['pos_jogador'][0] + 1,estado['pos_jogador'][1]] in estado['paredes_no_jogo']:
-            if achou_monstro != 'sim na direita':
-                estado['pos_jogador'][0] = estado['pos_jogador'][0] + 1
-                
-            else:
-                for objeto in objetos:
-                    if objeto['posicao'] == [estado['pos_jogador'][0] + 1,estado['pos_jogador'][1]]:
-                        if objeto['tipo'] == MONSTRO:
-                            monstro_atacado = objeto
-                            sorteado = random.random()
-                            if sorteado < objeto['probabilidade_de_ataque']:
-                                if estado['vidas'] > 0:
-                                    estado['vidas'] = estado['vidas'] -1
-                                    estado['mensagem'] = 'o monstro atacou voce!'
-                            else:
-                                if objeto['vida'] > 0:
-                                    objeto['vida'] = objeto['vida'] -1
-                                    estado['mensagem'] = 'voce atacou o monstro!'
-                                    if objeto['vida'] == 0:
-                                        estado['objetos'].remove(objeto)                   
-        else:
+        destino = [pos_jogador[0] + 1, pos_jogador[1]]
+        if destino in estado['paredes_no_jogo']:
             estado['mensagem'] = 'parede no caminho'
-
+        elif achou_monstro != 'sim na direita':
+            pos_jogador[0] = pos_jogador[0] + 1
+        else:
+            for objeto in objetos:
+                if objeto['tipo'] in TIPOS_MONSTRO and objeto['posicao'] == destino:
+                    monstro_atacado = objeto
+                    if estado['tem_espada'] and objeto['tipo'] == OGRO:
+                        objeto['vida'] = objeto['vida'] - 2
+                        estado['mensagem'] = 'voce acertou o ogro com a espada!'
+                        if objeto['vida'] <= 0:
+                            objetos.remove(objeto)
+                            estado['mensagem'] = 'voce matou o ogro!'
+                    elif estado['tem_espada']:
+                        objetos.remove(objeto)
+                        estado['mensagem'] = 'voce matou o monstro com a espada!'
+                    else:
+                        sorteado = random.random()
+                        if sorteado < objeto['probabilidade_de_ataque']:
+                            estado['vidas'] = estado['vidas'] - 1
+                            estado['mensagem'] = 'o monstro atacou voce!'
+                        else:
+                            objeto['vida'] = objeto['vida'] - 1
+                            estado['mensagem'] = 'voce atacou o monstro!'
+                            if objeto['vida'] <= 0:
+                                objetos.remove(objeto)
+                                estado['mensagem'] = 'voce matou o monstro!'
+                    break
 
     if tecla == motor.SETA_CIMA:
         condicao = True
-        if not [estado['pos_jogador'][0] ,estado['pos_jogador'][1] -1] in estado['paredes_no_jogo']:
-            if achou_monstro != 'sim em cima':
-                estado['pos_jogador'][1] = estado['pos_jogador'][1] - 1
-                
-            else:
-                for objeto in objetos:
-                    if objeto['posicao'] == [estado['pos_jogador'][0],estado['pos_jogador'][1] - 1]:
-                        if objeto['tipo'] == MONSTRO:
-                            monstro_atacado = objeto
-                            sorteado = random.random()
-                            if sorteado < objeto['probabilidade_de_ataque']:
-                                if estado['vidas'] > 0:
-                                    estado['vidas'] = estado['vidas'] -1
-                                    estado['mensagem'] = 'o monstro atacou voce!'
-                            else:
-                                if objeto['vida'] > 0:
-                                    objeto['vida'] = objeto['vida'] -1
-                                    estado['mensagem'] = 'voce atacou o monstro!'
-                                    if objeto['vida'] == 0:
-                                        estado['objetos'].remove(objeto)                   
-        else:
+        destino = [pos_jogador[0], pos_jogador[1] - 1]
+        if destino in estado['paredes_no_jogo']:
             estado['mensagem'] = 'parede no caminho'
-        
-
+        elif achou_monstro != 'sim em cima':
+            pos_jogador[1] = pos_jogador[1] - 1
+        else:
+            for objeto in objetos:
+                if objeto['tipo'] in TIPOS_MONSTRO and objeto['posicao'] == destino:
+                    monstro_atacado = objeto
+                    if estado['tem_espada'] and objeto['tipo'] == OGRO:
+                        objeto['vida'] = objeto['vida'] - 2
+                        estado['mensagem'] = 'voce acertou o ogro com a espada!'
+                        if objeto['vida'] <= 0:
+                            objetos.remove(objeto)
+                            estado['mensagem'] = 'voce matou o ogro!'
+                    elif estado['tem_espada']:
+                        objetos.remove(objeto)
+                        estado['mensagem'] = 'voce matou o monstro com a espada!'
+                    else:
+                        sorteado = random.random()
+                        if sorteado < objeto['probabilidade_de_ataque']:
+                            estado['vidas'] = estado['vidas'] - 1
+                            estado['mensagem'] = 'o monstro atacou voce!'
+                        else:
+                            objeto['vida'] = objeto['vida'] - 1
+                            estado['mensagem'] = 'voce atacou o monstro!'
+                            if objeto['vida'] <= 0:
+                                objetos.remove(objeto)
+                                estado['mensagem'] = 'voce matou o monstro!'
+                    break
 
     if tecla == motor.SETA_BAIXO:
         condicao = True
-        
-        if not [estado['pos_jogador'][0],estado['pos_jogador'][1] + 1] in estado['paredes_no_jogo']:
-            if achou_monstro != 'sim em baixo':
-                estado['pos_jogador'][1] = estado['pos_jogador'][1] + 1
-            
-            else:
-                for objeto in objetos:
-                    if objeto['posicao'] == [estado['pos_jogador'][0],estado['pos_jogador'][1] + 1]:
-                        if objeto['tipo'] == MONSTRO:
-                            monstro_atacado = objeto
-                            sorteado = random.random()
-                            if sorteado < objeto['probabilidade_de_ataque']:
-                                if estado['vidas'] > 0:
-                                    estado['vidas'] = estado['vidas'] -1
-                                    estado['mensagem'] = 'o monstro atacou voce!'
-                            else:
-                                if objeto['vida'] > 0:
-                                    objeto['vida'] = objeto['vida'] -1
-                                    estado['mensagem'] = 'voce atacou o monstro!'
-                                    if objeto['vida'] == 0:
-                                        estado['objetos'].remove(objeto)                   
-        else:
+        destino = [pos_jogador[0], pos_jogador[1] + 1]
+        if destino in estado['paredes_no_jogo']:
             estado['mensagem'] = 'parede no caminho'
+        elif achou_monstro != 'sim em baixo':
+            pos_jogador[1] = pos_jogador[1] + 1
+        else:
+            for objeto in objetos:
+                if objeto['tipo'] in TIPOS_MONSTRO and objeto['posicao'] == destino:
+                    monstro_atacado = objeto
+                    if estado['tem_espada'] and objeto['tipo'] == OGRO:
+                        objeto['vida'] = objeto['vida'] - 2
+                        estado['mensagem'] = 'voce acertou o ogro com a espada!'
+                        if objeto['vida'] <= 0:
+                            objetos.remove(objeto)
+                            estado['mensagem'] = 'voce matou o ogro!'
+                    elif estado['tem_espada']:
+                        objetos.remove(objeto)
+                        estado['mensagem'] = 'voce matou o monstro com a espada!'
+                    else:
+                        sorteado = random.random()
+                        if sorteado < objeto['probabilidade_de_ataque']:
+                            estado['vidas'] = estado['vidas'] - 1
+                            estado['mensagem'] = 'o monstro atacou voce!'
+                        else:
+                            objeto['vida'] = objeto['vida'] - 1
+                            estado['mensagem'] = 'voce atacou o monstro!'
+                            if objeto['vida'] <= 0:
+                                objetos.remove(objeto)
+                                estado['mensagem'] = 'voce matou o monstro!'
+                    break
 
-    # criando objetos
-    for objeto in objetos:
-        if objeto['posicao'] == estado['pos_jogador']:
+    for objeto in list(objetos):
+        if objeto['posicao'] == pos_jogador:
             if objeto['tipo'] == CORACAO:
-                estado['objetos'].remove(objeto)
-                estado['mensagem'] = 'sua vida ja esta cheia'
+                objetos.remove(objeto)
                 if estado['vidas'] < estado['max_vidas']:
                     estado['vidas'] = estado['vidas'] + 1
                     estado['mensagem'] = 'voce ganhou uma vida!'
-                    
-        if objeto['posicao'] == estado['pos_jogador']:
-                    if objeto['tipo'] == ESPINHO:
-                        if estado['vidas'] > 0:
-                            estado['vidas'] = estado['vidas'] -1
-                            estado['mensagem'] = 'voce perdeu uma vida!'
+                else:
+                    estado['mensagem'] = 'sua vida ja esta cheia'
+            if objeto['tipo'] == ESPINHO:
+                estado['vidas'] = estado['vidas'] - 1
+                estado['mensagem'] = 'voce perdeu uma vida!'
 
-    
-
-    direcao_monstro = [motor.SETA_BAIXO, motor.SETA_CIMA,motor.SETA_ESQUERDA,motor.SETA_DIREITA]
+    direcao_monstro = [motor.SETA_BAIXO, motor.SETA_CIMA, motor.SETA_ESQUERDA, motor.SETA_DIREITA]
+    direcao_ogro = [motor.SETA_BAIXO, motor.SETA_CIMA]
+    diagonais = [[1, -1], [-1, -1], [1, 1], [-1, 1]]
     if condicao == True:
         for objeto in objetos:
-            if objeto['tipo'] == MONSTRO:
+            if objeto['tipo'] in TIPOS_MONSTRO:
                 if objeto is monstro_atacado:
                     continue
-                direcao = random.choice(direcao_monstro)
-                destino = [objeto['posicao'][0], objeto['posicao'][1]]
-                if direcao == motor.SETA_CIMA:
-                    destino[1] = destino[1] - 1
-                if direcao == motor.SETA_BAIXO:
-                    destino[1] = destino[1] + 1
-                if direcao == motor.SETA_ESQUERDA:
-                    destino[0] = destino[0] - 1
-                if direcao == motor.SETA_DIREITA:
-                    destino[0] = destino[0] + 1
+                if objeto['tipo'] is MONSTRO:
+                    direcao = random.choice(direcao_monstro)
+                    destino = [objeto['posicao'][0], objeto['posicao'][1]]
+                    if direcao == motor.SETA_CIMA:
+                        destino[1] = destino[1] - 1
+                    if direcao == motor.SETA_BAIXO:
+                        destino[1] = destino[1] + 1
+                    if direcao == motor.SETA_ESQUERDA:
+                        destino[0] = destino[0] - 1
+                    if direcao == motor.SETA_DIREITA:
+                        destino[0] = destino[0] + 1
+                if objeto['tipo'] is MORCEGO:
+                    d = random.choice(diagonais)
+                    destino = [objeto['posicao'][0], objeto['posicao'][1]]
+                    destino = [objeto['posicao'][0] + d[0], objeto['posicao'][1] + d[1]]
+                if objeto['tipo'] is OGRO:
+                    direcao = random.choice(direcao_ogro)
+                    destino = [objeto['posicao'][0], objeto['posicao'][1]]
+                    if direcao == motor.SETA_CIMA:
+                        destino[1] = destino[1] - 1
+                    if direcao == motor.SETA_BAIXO:
+                        destino[1] = destino[1] + 1
                 livre = True
+                if destino == pos_jogador:
+                    livre = False
                 for outro in objetos:
                     if outro['posicao'] == destino:
                         livre = False
-                if estado['pos_jogador'] == destino:
-                    livre = False    
 
                 if livre:
                     objeto['posicao'] = destino
 
-                             
-                            
-
-    if estado['vidas'] == 0:
+    if estado['vidas'] <= 0:
+        estado['vidas'] = 0
         estado['tela_atual'] = SAIR
 
-    # Mude o valor da chave 'tela_atual' para mudar de tela
-    # Começamos apagando a mensagem anterior, pois ela já foi mostrada no frame anterior
-    
-
-    # Escreva seu código para atualizar o dicionário "estado" com base na tecla apertada pelo jogador aqui
-    # APAGUE ESTA LINHA E ESCREVA SEU CÓDIGO AQUI
-
-    # Ao apertar a tecla 'i', o jogador deve ver o inventário
     if tecla == 'i':
+        estado['tela_anterior'] = TELA_JOGO
         estado['tela_atual'] = TELA_INVENTARIO
-    if estado['pos_jogador'] == [93,20]:
-        estado['tela_atual'] = TELA_SECRETA
-    # Termina o jogo se o jogador apertar ESC ou 'q'
-    elif tecla == motor.ESCAPE or tecla =='q':
+    elif tecla == motor.ESCAPE or tecla == 'q':
         estado['tela_atual'] = SAIR
+    elif pos_jogador == [93, 20]:
+        estado['tela_atual'] = TELA_SECRETA
+
 
 def desenha_tela_secreta(janela, estado, altura_tela, largura_tela):
-        mapa_escondido = estado['mapa_escondido']
-        largura_mapa_escondido = len(mapa_escondido[0])
-        altura_mapa_escondido = len(mapa_escondido)
-        obejetos = estado['objetos']
-        mapa = estado['mapa']
-        pos_jogador = estado['pos_jogador']
-        pos_jogador_tela_escondida = estado['pos_jogador_tela_escondida']
-        largura_mapa = len(mapa[0])
-        altura_mapa = len(mapa)
-        coracoes_vazios = estado['max_vidas'] - estado['vidas']
-        posiçoes = estado['posicoes_ocupadas']
-        dx = (largura_tela - largura_mapa)// 2
-        dy = (altura_tela - altura_mapa) // 2
-        deltax = (largura_tela - largura_mapa_escondido)// 2
-        deltay = (altura_tela - altura_mapa_escondido) // 2
-        motor.preenche_fundo(janela, PRETO)
-        for i in range(len(mapa_escondido)): 
-            for j in range(len(mapa_escondido[i])):
-                motor.desenha_string(janela, j + deltax,i + deltay, mapa_escondido[i][j], AZUL, AZUL)
-                motor.desenha_string(janela, 0 ,0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO )
-                if estado['vidas'] < estado['max_vidas']:
-                    motor.desenha_string(janela,estado['vidas'] * 2 ,0, coracoes_vazios * (CORACAO_BRANCO + ''), PRETO, BRANCO )
-                motor.desenha_string(janela, 0,altura_tela - 1, estado['mensagem'], PRETO, BRANCO )
-                motor.desenha_string(janela, pos_jogador_tela_escondida[0] + deltax,pos_jogador_tela_escondida[1] + deltay, JOGADOR , AZUL, BRANCO)
-        motor.mostra_janela(janela)
+    motor.preenche_fundo(janela, PRETO)
+    mapa_escondido = estado['mapa_escondido']
+    objetos_secretos = estado['objetos_secretos']
+    pos = estado['pos_jogador_tela_escondida']
+    coracoes_vazios = estado['max_vidas'] - estado['vidas']
+    largura_mapa_escondido = len(mapa_escondido[0])
+    altura_mapa_escondido = len(mapa_escondido)
+    deltax = (largura_tela - largura_mapa_escondido) // 2
+    deltay = (altura_tela - altura_mapa_escondido) // 2
+    
+    for i in range(len(mapa_escondido)):
+        for j in range(len(mapa_escondido[i])):
+            motor.desenha_string(janela, j + deltax, i + deltay, mapa_escondido[i][j], AZUL, AZUL)
+    texto = 'aperte v para voltar ao mapa'
+    motor.desenha_string(janela, largura_tela - len(texto) - 1, altura_tela - 1, texto, PRETO, BRANCO)
+    for objeto in objetos_secretos:
+        if objeto['tipo'] == PAREDE:
+            motor.desenha_string(janela, objeto['posicao'][0] + deltax, objeto['posicao'][1] + deltay, objeto['tipo'], MARROM_ESCURO, MARROM_MAIS_ESCURO)
+        if objeto['tipo'] == CORACAO:
+            motor.desenha_string(janela, objeto['posicao'][0] + deltax, objeto['posicao'][1] + deltay, objeto['tipo'], AZUL, VERMELHO)
+        if objeto['tipo'] == ESPADA:
+            motor.desenha_string(janela, objeto['posicao'][0] + deltax, objeto['posicao'][1] + deltay, objeto['tipo'], AZUL, AMARELO)
+        if objeto['tipo'] == CHEFAO:
+            motor.desenha_string(janela, objeto['posicao'][0] + deltax, objeto['posicao'][1] + deltay, '╠', AZUL, ROXO)
+            motor.desenha_string(janela, objeto['posicao'][0] + 3 + deltax, objeto['posicao'][1] + deltay, '╣', AZUL, ROXO)
+            motor.desenha_string(janela, objeto['posicao'][0] + 1 + deltax, objeto['posicao'][1] + deltay, objeto['tipo'], AZUL, VERDE_CLARO)
 
-        
+    motor.desenha_string(janela, 0, 0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO)
+    if estado['vidas'] < estado['max_vidas']:
+        motor.desenha_string(janela, estado['vidas'] * 2, 0, coracoes_vazios * CORACAO_BRANCO, PRETO, BRANCO)
+    motor.desenha_string(janela, 0, altura_tela - 1, estado['mensagem'], PRETO, BRANCO)
 
+    if estado['tem_espada']:
+        motor.desenha_string(janela, pos[0] + deltax, pos[1] + deltay, JOGADOR_COM_ESPADA, AZUL, BRANCO)
+    else:
+        motor.desenha_string(janela, pos[0] + deltax, pos[1] + deltay, JOGADOR, AZUL, BRANCO)
+
+    motor.mostra_janela(janela)
 
 
 def atualiza_estado_secreta(estado, tecla):
-    
+    estado['mensagem'] = ''
     pos = estado['pos_jogador_tela_escondida']
+    objetos_secretos = estado['objetos_secretos']
 
     if tecla == 'i':
+        estado['tela_anterior'] = TELA_SECRETA
         estado['tela_atual'] = TELA_INVENTARIO
+        return
+    if tecla == 'v':
+        estado['tela_atual'] = TELA_JOGO
+        estado['pos_jogador'] = [93, 19]
+        return
+    if tecla == motor.ESCAPE or tecla == 'q':
+        estado['tela_atual'] = SAIR
+        return
+
+    destino = [pos[0], pos[1]]
     if tecla == motor.SETA_ESQUERDA:
-        pos[0] = pos[0] - 1
+        destino[0] = destino[0] - 1
     if tecla == motor.SETA_DIREITA:
-        pos[0] = pos[0] + 1
+        destino[0] = destino[0] + 1
     if tecla == motor.SETA_CIMA:
-        pos[1] = pos[1] - 1
+        destino[1] = destino[1] - 1
     if tecla == motor.SETA_BAIXO:
-        pos[1] = pos[1] + 1
+        destino[1] = destino[1] + 1
+
+    if destino == pos:
+        return
+
+    bloqueado = False
+    chefao_atacado = None
+    for objeto in list(objetos_secretos):
+        casas = [objeto['posicao']]
+        if objeto['tipo'] == CHEFAO:
+            casas = [objeto['posicao'],
+                     [objeto['posicao'][0] + 1, objeto['posicao'][1]],
+                     [objeto['posicao'][0] + 2, objeto['posicao'][1]],
+                     [objeto['posicao'][0] + 3, objeto['posicao'][1]]]
+        if destino in casas:
+            if objeto['tipo'] == PAREDE:
+                bloqueado = True
+                estado['mensagem'] = 'parede no caminho'
+            if objeto['tipo'] == CHEFAO:
+                bloqueado = True
+                chefao_atacado = objeto
+                if estado['tem_espada']:
+                    sorteado = random.random()
+                    if sorteado < objeto['probabilidade_de_ataque']:
+                        estado['vidas'] = estado['vidas'] - 2
+                        estado['mensagem'] = 'o chefao te acertou! -2 vidas'
+                    else:
+                        objeto['vida'] = objeto['vida'] - 5
+                        estado['mensagem'] = 'voce acertou o chefao com a espada!'
+                        if objeto['vida'] <= 0:
+                            objetos_secretos.remove(objeto)
+                            estado['mensagem'] = 'voce derrotou o chefao!'
+                else:
+                    estado['vidas'] = estado['vidas'] - 3
+                    estado['mensagem'] = 'sem a espada o chefao te arrasou! -3 vidas'
+            if objeto['tipo'] == CORACAO:
+                objetos_secretos.remove(objeto)
+                if estado['vidas'] < estado['max_vidas']:
+                    estado['vidas'] = estado['vidas'] + 1
+                    estado['mensagem'] = 'voce ganhou uma vida!'
+                else:
+                    estado['mensagem'] = 'sua vida ja esta cheia'
+            if objeto['tipo'] == ESPADA:
+                objetos_secretos.remove(objeto)
+                estado['tem_espada'] = True
+                estado['inventario'].append(ESPADA)
+                estado['mensagem'] = 'voce pegou a espada!'
+            break
+
+    if bloqueado == False:
+        pos[0] = destino[0]
+        pos[1] = destino[1]
+
+    direcao_monstro = [motor.SETA_BAIXO, motor.SETA_CIMA, motor.SETA_ESQUERDA, motor.SETA_DIREITA]
+    for objeto in objetos_secretos:
+        if objeto['tipo'] == CHEFAO:
+            if objeto is chefao_atacado:
+                continue
+            direcao = random.choice(direcao_monstro)
+            novo = [objeto['posicao'][0], objeto['posicao'][1]]
+            if direcao == motor.SETA_CIMA:
+                novo[1] = novo[1] - 1
+            if direcao == motor.SETA_BAIXO:
+                novo[1] = novo[1] + 1
+            if direcao == motor.SETA_ESQUERDA:
+                novo[0] = novo[0] - 1
+            if direcao == motor.SETA_DIREITA:
+                novo[0] = novo[0] + 1
+
+            casas = [novo, [novo[0] + 1, novo[1]], [novo[0] + 2, novo[1]], [novo[0] + 3, novo[1]]]
+            livre = True
+            if pos in casas:
+                livre = False
+            for outro in objetos_secretos:
+                if outro is objeto:
+                    continue
+                if outro['posicao'] in casas:
+                    livre = False
+            if livre:
+                objeto['posicao'] = novo
+
+    if estado['vidas'] <= 0:
+        estado['vidas'] = 0
+        estado['tela_atual'] = SAIR

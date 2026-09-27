@@ -208,7 +208,7 @@ def inicializa_estado():
     
     # Cria outros objetos do mapa
     posicoes_ocupadas = [pos_jogador]
-    posicoes_ocupadas_secreta = [15 , 1]
+    posicoes_ocupadas_secreta = [[15 , 1]]
     for posicao in area_da_portinha:
             posicoes_ocupadas.append(posicao)
     
@@ -221,22 +221,63 @@ def inicializa_estado():
                     'cor': MARROM_ESCURO,
                 })
         posicoes_ocupadas.append(posicao)
-    
-        posicoes_ocupadas.append
+
+    for posicao in paredes_sala_secreta:
+        objetos_secretos.append({
+                    'tipo': PAREDE,
+                    'posicao': posicao,
+                    'cor': MARROM_ESCURO,
+                })
+        posicoes_ocupadas_secreta.append(posicao)
 
     objetos += gera_objetos(15, CORACAO, VERMELHO, largura_mapa, altura_mapa, posicoes_ocupadas)
     objetos += gera_objetos(25, ESPINHO, VERDE_CLARO, largura_mapa, altura_mapa, posicoes_ocupadas)
-    objetos += gera_objetos(6, MONSTRO, BRANCO, largura_mapa, altura_mapa, posicoes_ocupadas)
-    objetos += gera_objetos(2, CORACAO, VERMELHO, largura_mapa_escondido, altura_mapa_escondido, posicoes_ocupadas_secreta)
+    objetos += gera_objetos(3, MONSTRO, BRANCO, largura_mapa, altura_mapa, posicoes_ocupadas)
+    objetos += gera_objetos(3, MORCEGO, BRANCO, largura_mapa, altura_mapa, posicoes_ocupadas)
+    objetos += gera_objetos(4, OGRO, VERMELHO, largura_mapa, altura_mapa, posicoes_ocupadas)
 
     for objeto in objetos:
-            if objeto['tipo'] == MONSTRO:
-                objeto['vida'] = 5
-                objeto['probabilidade_de_ataque'] = 0.3
+        if objeto['tipo'] == MONSTRO:
+            objeto['vida'] = 5
+            objeto['probabilidade_de_ataque'] = 0.3
+        if objeto['tipo'] == MORCEGO:
+            objeto['vida'] = 2
+            objeto['probabilidade_de_ataque'] = 0.5
+        if objeto['tipo'] == OGRO:
+            objeto['vida'] = 8
+            objeto['probabilidade_de_ataque'] = 0.4
+
+    for posicao in [[25, 8], [15, 12]]:
+        objetos_secretos.append({
+            'tipo': CORACAO,
+            'posicao': posicao,
+            'cor': VERMELHO,
+        })
+        posicoes_ocupadas_secreta.append(posicao)
+
+    objetos_secretos.append({
+        'tipo': ESPADA,
+        'posicao': [4, 8],
+        'cor': AMARELO,
+    })
+    posicoes_ocupadas_secreta.append([4, 8])
+
+    objetos_secretos.append({
+        'tipo': CHEFAO,
+        'posicao': [13, 7],
+        'cor': VERDE_CLARO,
+        'vida': 10,
+        'probabilidade_de_ataque': 0.4,
+    })
+    posicoes_ocupadas_secreta.append([13, 7])
+    posicoes_ocupadas_secreta.append([14, 7])
+    posicoes_ocupadas_secreta.append([15, 7])
+    posicoes_ocupadas_secreta.append([16, 7])
     
     
     return {
         'tela_atual': TELA_JOGO,
+        'tela_anterior': TELA_JOGO,
         'pos_jogador': pos_jogador,
         'vidas': 5,  # Quantidade atual de vidas do jogador - ele pode perder vidas ao colidir com espinhos ou ganhar vidas ao pegar corações
         'max_vidas': 5,  # Quantidade máxima de vidas que o jogador pode ter - o valor da chave 'vidas' nunca pode ser maior que o valor da chave 'max_vidas'
@@ -248,6 +289,11 @@ def inicializa_estado():
         'mapa_escondido' : mapa_escondido,
         'objetos_secretos' : objetos_secretos,
         'pos_jogador_tela_escondida': pos_jogador_tela_escondida,
+        'posicoes_ocupadas_secreta': posicoes_ocupadas_secreta,
+        'paredes_sala_secreta': paredes_sala_secreta,
+        'tem_espada': False,
+        'inventario': []
+        
 
         
         
