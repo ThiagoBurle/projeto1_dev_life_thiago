@@ -3,9 +3,12 @@ from random import randint
 from constantes import *  # Você pode usar as constantes definidas em constantes.py, se achar útil
                           # Por exemplo, usar a constante CORACAO é o mesmo que colocar a string '❤'
                           # diretamente no código
+# as paredes sao carregadas do arquivo mapa.txt, por isso a lista comeca vazia
 paredes_no_jogo = []
 paredes_sala_secreta = [
 ]
+# corredor e salinha que levam pra passagem secreta
+# essas posicoes entram em posicoes_ocupadas pra nao nascer nada em cima delas
 area_da_portinha = [
     [92,11], [93,11], [94,11], [93,12], [93,13], [93,14], [93,15],
     [93,16], [93,17], [93,18], [90,19], [91,19], [92,19], [93,19],
@@ -119,6 +122,8 @@ def inicializa_estado():
     largura_mapa_escondido = len(mapa_escondido[0])
     altura_mapa_escondido = len(mapa_escondido)
     
+    # le o mapa do arquivo: cada # do arquivo virou uma parede
+    # linha e a coordenada y e elemento e a coordenada x
     with open('mapa.txt','r') as arquivo:
         linhas = arquivo.read().split('\n')
         for linha in range(len(linhas)):
@@ -126,6 +131,7 @@ def inicializa_estado():
                 if linhas[linha][elemento] == '#':
                     paredes_no_jogo.append([elemento,linha])
 
+    # mesma coisa, mas pro mapa da sala secreta
     with open('mapa_secreto.txt','r') as arquivo:
             linhas = arquivo.read().split('\n')
             for linha in range(len(linhas)):
@@ -147,6 +153,7 @@ def inicializa_estado():
     
     objetos = []
     objetos_secretos = []
+    # transforma cada coordenada de parede em um objeto pra poder desenhar depois
     for posicao in paredes_no_jogo:
         objetos.append({
                     'tipo': PAREDE,
@@ -169,6 +176,7 @@ def inicializa_estado():
     objetos += gera_objetos(3, MORCEGO, BRANCO, largura_mapa, altura_mapa, posicoes_ocupadas)
     objetos += gera_objetos(4, OGRO, VERMELHO, largura_mapa, altura_mapa, posicoes_ocupadas)
 
+    # da vida e chance de ataque pra cada tipo de monstro
     for objeto in objetos:
         if objeto['tipo'] == MONSTRO:
             objeto['vida'] = 6
@@ -204,6 +212,7 @@ def inicializa_estado():
         })
         posicoes_ocupadas_secreta.append(posicao)
 
+    # o chefao fica fixo no meio da sala secreta e ocupa 4 casas
     objetos_secretos.append({
         'tipo': CHEFAO,
         'posicao': [13, 7],

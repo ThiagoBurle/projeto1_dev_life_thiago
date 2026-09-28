@@ -2,8 +2,10 @@ from constantes import *
 import motor_grafico as motor
 from inicializacao import gera_posicao_desocupada
 import random
+# tela que aparece quando o jogador mata todos os monstros e o chefao
 def desenha_tela_campeao(janela, estado, altura_tela, largura_tela):
     mensagem = 'parabéns jogador voce eliminou todos os monstros, aperte q para sair'
+    # largura_tela // 2 - len(mensagem) // 2 centraliza o texto na tela
     motor.preenche_fundo(janela, PRETO)
     motor.desenha_string(janela, largura_tela //2 - len(mensagem) // 2, altura_tela // 2, mensagem, PRETO, BRANCO)
     motor.mostra_janela(janela)
@@ -13,6 +15,7 @@ def atualiza_estado_campeao(estado , tecla):
         estado['tela_anterior'] = TELA_CAMPEAO
         estado['tela_atual'] = SAIR
 
+# tela que aparece quando as vidas chegam a zero
 def desenha_tela_perdeu(janela, estado, altura_tela, largura_tela):
     mensagem = 'os monstros dominaram o mapa aperte q para sair'
     motor.preenche_fundo(janela, PRETO)
@@ -24,6 +27,7 @@ def atualiza_estado_perdeu(estado , tecla):
         estado['tela_anterior'] = TELA_PERDEU
         estado['tela_atual'] = SAIR
 
+# primeira tela do jogo, o jogador escolhe entre jogar e ver as instrucoes
 def desenha_tela_inicial(janela, estado, altura_tela, largura_tela):
     mensagem = 'aperte a tecla j para jogar'
     mensagem2 = 'aperte a tecla h para ver as instrucoes'
@@ -42,6 +46,7 @@ def atualiza_estado_inicial(estado , tecla):
         estado['tela_atual'] = TELA_INSTRUCOES
 
 
+# tela de instrucoes, desenha cada texto da lista uma linha embaixo da outra
 def desenha_tela_instrucoes(janela, estado, altura_tela, largura_tela):
     titulo = 'INSTRUCOES'
     linhas = [
@@ -83,6 +88,7 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
     coracoes_vazios = estado['max_vidas'] - estado['vidas']
     largura_mapa = len(mapa[0])
     altura_mapa = len(mapa)
+    # dx e dy centralizam o mapa na janela, todo desenho soma eles na posicao
     dx = (largura_tela - largura_mapa) // 2
     dy = (altura_tela - altura_mapa) // 2
     
@@ -101,11 +107,13 @@ def desenha_tela(janela, estado, altura_tela, largura_tela):
         if objeto['tipo'] in TIPOS_MONSTRO:
             motor.desenha_string(janela, objeto['posicao'][0] + dx, objeto['posicao'][1] + dy, objeto['tipo'], CINZA_CLARO, objeto['cor'])
 
+    # um coracao vermelho por vida que tem e um branco por vida que perdeu
     motor.desenha_string(janela, 0, 0, estado['vidas'] * (CORACAO + ' '), PRETO, VERMELHO)
     if estado['vidas'] < estado['max_vidas']:
         motor.desenha_string(janela, estado['vidas'] * 2, 0, coracoes_vazios * CORACAO_BRANCO, PRETO, BRANCO)
     motor.desenha_string(janela, 0, altura_tela - 1, estado['mensagem'], PRETO, BRANCO)
 
+    # o boneco muda de emoji quando a espada esta ativada
     if estado['tem_espada']:
         motor.desenha_string(janela, pos_jogador[0] + dx, pos_jogador[1] + dy, JOGADOR_COM_ESPADA, CINZA_CLARO, BRANCO)
     else:
@@ -124,6 +132,7 @@ def atualiza_estado(estado, tecla):
     objetos_secretos = estado['objetos_secretos']
     monstros_vivos = 0
 
+    # olha as 4 casas ao redor do jogador pra saber se tem monstro do lado
     for objeto in objetos:
         if objeto['tipo'] in TIPOS_MONSTRO:
             if [pos_jogador[0], pos_jogador[1] - 1] == objeto['posicao']:
@@ -135,6 +144,7 @@ def atualiza_estado(estado, tecla):
             if [pos_jogador[0] + 1, pos_jogador[1]] == objeto['posicao']:
                 achou_monstro = 'sim na direita'
 
+    # se tem parede no destino nao anda, se tem monstro comeca a batalha, senao anda
     if tecla == motor.SETA_ESQUERDA:
         condicao = True
         destino = [pos_jogador[0] - 1, pos_jogador[1]]
@@ -152,6 +162,8 @@ def atualiza_estado(estado, tecla):
                         dano = 2
                     if estado['espadas_usadas'] >= 2:
                         chance = chance * 0.75
+                    # sorteia quem acerta: com espada o dano vira 2
+                    # e com 2 espadas usadas a chance do monstro acertar cai
                     sorteado = random.random()
                     if sorteado < chance:
                         estado['vidas'] = estado['vidas'] - 1
@@ -255,6 +267,7 @@ def atualiza_estado(estado, tecla):
                             monstros_vivos -= 1
                     break
 
+    # pega o coracao ou toma o dano do espinho na casa onde o jogador parou
     for objeto in list(objetos):
         if objeto['posicao'] == pos_jogador:
             if objeto['tipo'] == CORACAO:
@@ -268,6 +281,8 @@ def atualiza_estado(estado, tecla):
                 estado['vidas'] = estado['vidas'] - 1
                 estado['mensagem'] = 'voce perdeu uma vida!'
 
+    # movimento dos monstros: fantasma anda pros 4 lados,
+    # morcego anda na diagonal e ogro so pra cima e pra baixo
     direcao_monstro = [motor.SETA_BAIXO, motor.SETA_CIMA, motor.SETA_ESQUERDA, motor.SETA_DIREITA]
     direcao_ogro = [motor.SETA_BAIXO, motor.SETA_CIMA]
     diagonais = [[1, -1], [-1, -1], [1, 1], [-1, 1]]
@@ -298,6 +313,7 @@ def atualiza_estado(estado, tecla):
                         destino[1] = destino[1] - 1
                     if direcao == motor.SETA_BAIXO:
                         destino[1] = destino[1] + 1
+                # so anda se a casa estiver vazia
                 livre = True
                 if destino == pos_jogador:
                     livre = False
@@ -319,6 +335,7 @@ def atualiza_estado(estado, tecla):
         estado['tela_atual'] = TELA_INVENTARIO
     elif tecla == motor.ESCAPE or tecla == 'q':
         estado['tela_atual'] = SAIR
+    # andar em cima da portinha muda pra tela da sala secreta
     elif pos_jogador == [93, 20]:
         estado['tela_atual'] = TELA_SECRETA
 
@@ -333,11 +350,13 @@ def atualiza_estado(estado, tecla):
         if objeto['tipo'] in TIPOS_MONSTRO:
             monstros_vivos = monstros_vivos + 1
     
+    # se nao sobrou nenhum monstro e nem o chefao o jogador venceu
     if monstros_vivos == 0 and chefao_vivo == 0:
         estado['tela_anterior'] = TELA_JOGO
         estado['tela_atual'] = TELA_CAMPEAO
 
 
+# desenha a sala secreta, o chefao e desenhado em 4 casas ( ╠ 🦖 ╣ )
 def desenha_tela_secreta(janela, estado, altura_tela, largura_tela):
     motor.preenche_fundo(janela, PRETO)
     mapa_escondido = estado['mapa_escondido']
@@ -402,6 +421,7 @@ def atualiza_estado_secreta(estado, tecla):
         estado['tela_atual'] = SAIR
         return
 
+    # calcula o destino antes de andar pra poder checar o que tem naquela casa
     destino = [pos[0], pos[1]]
     if tecla == motor.SETA_ESQUERDA:
         destino[0] = destino[0] - 1
@@ -418,6 +438,7 @@ def atualiza_estado_secreta(estado, tecla):
     bloqueado = False
     chefao_atacado = None
     for objeto in list(objetos_secretos):
+        # o chefao ocupa 4 casas, entao precisa checar as 4 pra saber se bateu nele
         casas = [objeto['posicao']]
         if objeto['tipo'] == CHEFAO:
             casas = [objeto['posicao'],
@@ -431,6 +452,8 @@ def atualiza_estado_secreta(estado, tecla):
             if objeto['tipo'] == CHEFAO:
                 bloqueado = True
                 chefao_atacado = objeto
+                # sem espada o chefao tira 3 vidas direto
+                # com espada vira batalha: ou ele tira 2 suas ou voce tira 5 dele
                 if estado['tem_espada']:
                     sorteado = random.random()
                     if sorteado < objeto['probabilidade_de_ataque']:

@@ -12,6 +12,7 @@ def desenha_tela(janela, estado, altura, largura):
     motor.desenha_string(janela, 0, altura - 1, mensagem, BRANCO, PRETO)
     
 
+    # lista os itens do inventario, uma linha pra cada item
     linha = 4
     for item in estado['inventario']:
         if item == ESPADA:
@@ -31,6 +32,7 @@ def atualiza_estado(estado, tecla_apertada):
         estado['tela_atual'] = estado['tela_anterior']
     elif tecla_apertada in (motor.ESCAPE, 'q'):
         estado['tela_atual'] = SAIR
+    # p ativa a espada: sai do inventario e conta quantas espadas ja foram usadas
     if tecla_apertada == 'p':
         if ESPADA in estado['inventario']:
             estado['tem_espada'] = True
@@ -41,6 +43,7 @@ def atualiza_estado(estado, tecla_apertada):
                 estado['mensagem_inventario'] = 'duas espadas ativadas, voce luta melhor'
         else:
             estado['mensagem_inventario'] = 'voce nao tem espada'
+    # o ativa o escudo: aumenta o maximo de vidas em 2 e ja enche essas 2
     if tecla_apertada == 'o':
         if ESCUDO in estado['inventario']:
             estado['inventario'].remove(ESCUDO)
